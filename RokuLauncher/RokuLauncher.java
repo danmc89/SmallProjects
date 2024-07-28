@@ -8,9 +8,9 @@ import javax.swing.SwingUtilities;
 
 public class RokuLauncher {
 	public static final String 
-		ROKU_PATH="RokuLauncher\\Roku Channels",
-		FIREFOX_PATH="firefox.exe",
-		ROKU_CHANNEL_SUFFIX="Online for Free _ The Roku Channel _ Roku.url",
+		ROKU_PATH=PropertiesFileLoader.getLauncherProperties().get("roku_path"),
+		BROWSER_PATH=PropertiesFileLoader.getLauncherProperties().get("browser_path"),
+		ROKU_CHANNEL_SUFFIX=PropertiesFileLoader.getLauncherProperties().get("roku_channel_suffix"),
 		ROKU_CHANNEL_FILETYPE=".url";
 	
 	public static ArrayList<String> getOSFileList(String dir, String filter) 
@@ -43,11 +43,12 @@ public class RokuLauncher {
 	
 	public static void launchChannel(String filename)
 	{
-		executeProcess(FIREFOX_PATH, filename);
+		executeProcess(BROWSER_PATH, filename);
 	}
 	
 	public static void main(String [] args)
 	{
+		System.out.println(ROKU_PATH + " : " + ROKU_CHANNEL_FILETYPE);
 		ArrayList<String> listOfChannels = getOSFileList(ROKU_PATH, ROKU_CHANNEL_FILETYPE);
 		
 		 SwingUtilities.invokeLater(() -> {

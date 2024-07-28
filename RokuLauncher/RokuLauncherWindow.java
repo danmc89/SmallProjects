@@ -1,5 +1,6 @@
 package RokuLauncher;
 
+import java.lang.Integer;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -16,10 +17,10 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private static final int 
-		BUTTON_HEIGHT = 50,
-		WINDOW_WIDTH_MIN = 300,
-		WINDOW_LOCATION_X = 150,
-		WINDOW_LOCATION_Y = 150;
+		BUTTON_HEIGHT = Integer.parseInt(PropertiesFileLoader.getLauncherProperties().get("button_height")),
+		WINDOW_WIDTH_MIN = Integer.parseInt(PropertiesFileLoader.getLauncherProperties().get("button_width_min")),
+		WINDOW_LOCATION_X = Integer.parseInt(PropertiesFileLoader.getLauncherProperties().get("window_location_x")),
+		WINDOW_LOCATION_Y = Integer.parseInt(PropertiesFileLoader.getLauncherProperties().get("window_location_y"));
 	
 	public RokuLauncherWindow(int count, ArrayList<String> listOfFiles)
 	{
