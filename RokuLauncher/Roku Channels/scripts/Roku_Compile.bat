@@ -1,0 +1,2 @@
+cd ..\..\..
+javac RokuLauncher\*.java
