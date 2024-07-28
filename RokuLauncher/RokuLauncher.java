@@ -8,8 +8,8 @@ import javax.swing.SwingUtilities;
 
 public class RokuLauncher {
 	public static final String 
-		ROKU_PATH="C:\\Users\\danie\\OneDrive\\Desktop\\Roku Channels",
-		FIREFOX_PATH="C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+		ROKU_PATH="RokuLauncher\\Roku Channels",
+		FIREFOX_PATH="firefox.exe",
 		ROKU_CHANNEL_SUFFIX="Online for Free _ The Roku Channel _ Roku.url",
 		ROKU_CHANNEL_FILETYPE=".url";
 	

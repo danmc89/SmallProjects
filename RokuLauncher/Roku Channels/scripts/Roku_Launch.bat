@@ -1,3 +1,3 @@
-cd C:\Users\danie\eclipse-workspace\RokuLauncher\src
+cd ..\..\..
 javac RokuLauncher\*.java
 START /B javaw RokuLauncher.RokuLauncher
