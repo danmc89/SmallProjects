@@ -48,7 +48,6 @@ public class RokuLauncher {
 	
 	public static void main(String [] args)
 	{
-		System.out.println(ROKU_PATH + " : " + ROKU_CHANNEL_FILETYPE);
 		ArrayList<String> listOfChannels = getOSFileList(ROKU_PATH, ROKU_CHANNEL_FILETYPE);
 		
 		 SwingUtilities.invokeLater(() -> {
