@@ -9,7 +9,8 @@ public enum RokuProperties {
 	BUTTON_HEIGHT(PropertiesFileLoader.getLauncherProperties().get("button_height")),
 	WINDOW_WIDTH_MIN(PropertiesFileLoader.getLauncherProperties().get("button_width_min")),
 	WINDOW_LOCATION_X(PropertiesFileLoader.getLauncherProperties().get("window_location_x")),
-	WINDOW_LOCATION_Y(PropertiesFileLoader.getLauncherProperties().get("window_location_y"));
+	WINDOW_LOCATION_Y(PropertiesFileLoader.getLauncherProperties().get("window_location_y")),
+	ICON(PropertiesFileLoader.getLauncherProperties().get("icon"));
 	
 	private String propertiesValue = "";
 	

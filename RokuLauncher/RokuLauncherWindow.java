@@ -3,11 +3,16 @@ package RokuLauncher;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +20,7 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -44,6 +50,7 @@ public class RokuLauncherWindow extends JFrame {
 		      RokuLauncher.closeRokuVideo();
 		    }
 		});
+		setupTrayIcon();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -118,5 +125,53 @@ public class RokuLauncherWindow extends JFrame {
 		return width > RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt()
 				? width 
 				: RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
+	}
+	
+	private void setupTrayIcon()
+	{
+		try {
+			PopupMenu trayPopupMenu = new PopupMenu();
+			File file = new File(RokuProperties.ICON.getPropertiesValue());//use location from .bat script
+			BufferedImage img = ImageIO.read(file);
+			
+			MenuItem 	
+				open = new MenuItem("Open"),
+				close = new MenuItem("Close");
+			
+			open.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					setVisible(true);
+				}
+			});
+		    close.addActionListener(new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		        	RokuLauncher.closeRokuVideo();
+		            System.exit(0);           
+		        }
+		    });
+		    
+		    trayPopupMenu.add(open);
+		    trayPopupMenu.add(close);
+		    
+		    TrayIcon trayIcon = new TrayIcon(img, "Roku Launcher", trayPopupMenu);
+		    trayIcon.setImageAutoSize(true);
+		    //setup system tray
+			SystemTray systemTray = SystemTray.getSystemTray();
+			systemTray.add(trayIcon);
+			
+			this.addWindowStateListener(new WindowStateListener() {
+				public void windowStateChanged(WindowEvent e) {
+					if(e.getNewState()==ICONIFIED){
+						setVisible(false);
+					}
+				}
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }
