@@ -165,6 +165,7 @@ public class RokuLauncherWindow extends JFrame {
 				public void windowStateChanged(WindowEvent e) {
 					if(e.getNewState()==ICONIFIED) {
 						setVisible(false);
+						setExtendedState(NORMAL);
 					}
 				}
 			});
