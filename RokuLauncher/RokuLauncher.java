@@ -67,9 +67,9 @@ public class RokuLauncher {
 				RokuProperties.ROKU_PATH.getPropertiesValue(), 
 				RokuProperties.ROKU_CHANNEL_FILETYPE.getPropertiesValue());
 		
-		 SwingUtilities.invokeLater(() -> {
+		SwingUtilities.invokeLater(() -> {
 			 RokuLauncherWindow window = new RokuLauncherWindow(listOfChannels.size(), listOfChannels);
 		        window.setVisible(true);
-		    });
+		});
 	}
 }

@@ -50,7 +50,9 @@ public class RokuLauncherWindow extends JFrame {
 		      RokuLauncher.closeRokuVideo();
 		    }
 		});
-		setupTrayIcon();
+		if(RokuProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true")) {
+			setupTrayIcon();
+		}
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

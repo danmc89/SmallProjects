@@ -14,7 +14,6 @@ public class PropertiesFileLoader {
 	
 	private static void readLauncherProperties() 
 	{
-		
 		File file = new File(".\\RokuLauncher\\data\\Launcher.properties");//use location from .bat script
 		if(!file.exists())//use eclipse workspace location
 		{
