@@ -28,7 +28,6 @@ public class PropertiesFileLoader {
 				String s = sc.nextLine();
 				String [] ss = s.split("=");
 				PROPERTIES.put(ss[0], ss[1]);
-				System.out.println(ss[0] + "," + ss[1]);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

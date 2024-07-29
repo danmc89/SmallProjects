@@ -1,6 +1,7 @@
 package RokuLauncher;
 
 import java.lang.Integer;
+import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -21,30 +22,37 @@ public class RokuLauncherWindow extends JFrame {
 		WINDOW_WIDTH_MIN = Integer.parseInt(PropertiesFileLoader.getLauncherProperties().get("button_width_min")),
 		WINDOW_LOCATION_X = Integer.parseInt(PropertiesFileLoader.getLauncherProperties().get("window_location_x")),
 		WINDOW_LOCATION_Y = Integer.parseInt(PropertiesFileLoader.getLauncherProperties().get("window_location_y"));
+	private FontMetrics fontMetricsButton;
 	
 	public RokuLauncherWindow(int count, ArrayList<String> listOfFiles)
 	{
 		setTitle("Roku Launcher");
-		setSize(windowWidth(listOfFiles), BUTTON_HEIGHT * count);
 		LayoutManager gl = new GridLayout(count, 1);
 		setLayout(gl);
 		setLocation(WINDOW_LOCATION_X, WINDOW_LOCATION_Y);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		addButtons(listOfFiles);
+		int winWide = windowWidth(listOfFiles);
+		setSize(winWide, BUTTON_HEIGHT * count);//setSize is dependent on button add for "fontMetricsButton" variable
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	private void addButtons(ArrayList<String> listOfFiles)
 	{
+		JButton b = null;
 		for (String s : listOfFiles)
 		{
-			this.add(createButton(this, s));
+			b = createButton(this, s);
+			this.add(b);
 		}
+		this.fontMetricsButton = b.getFontMetrics(b.getFont()); 		
 	}
 	
 	public JButton createButton(JFrame jf, String title)
 	{
-		JButton b = new JButton(title);
+		JButton b = new JButton();
+		
 		b.setName(title);
 		b.setText(titleCreator(title));
 		b.addActionListener(new ActionListener() {
@@ -57,8 +65,9 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private String titleCreator(String buttonTitle)
 	{
-		String replstr = "";
-		String stripStr = RokuLauncher.ROKU_CHANNEL_SUFFIX;
+		String 
+			replstr = "",
+			stripStr = RokuLauncher.ROKU_CHANNEL_SUFFIX;
 		
 		Pattern pat = Pattern.compile(stripStr, Pattern.CASE_INSENSITIVE);
 		Matcher mat = pat.matcher(buttonTitle);
@@ -67,14 +76,15 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private int windowWidth(ArrayList<String> listOfFiles)
 	{
-		int hi = 0, pad=100;
+		String lenStr = "";
+		
 		for (String s : listOfFiles)
 		{
-			int len = s.length();
-			if(hi < len)
-				hi = s.length();
+			if(lenStr.length() < s.length())
+				lenStr = s;
 		}
-		hi=(hi * 3) + pad;
-		return hi > WINDOW_WIDTH_MIN ? hi : WINDOW_WIDTH_MIN;
+		int width = this.fontMetricsButton.stringWidth(lenStr);
+		
+		return width > WINDOW_WIDTH_MIN ? width : WINDOW_WIDTH_MIN;
 	}
 }
