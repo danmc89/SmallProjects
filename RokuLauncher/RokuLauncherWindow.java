@@ -1,5 +1,6 @@
 package RokuLauncher;
 
+import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
@@ -28,6 +29,8 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private FontMetrics fontMetricsButton;
+	private JButton selectedButton;
+	private static final Color HIGHLIGHT_COLOR = new Color(238, 238, 238);
 	
 	public RokuLauncherWindow(int count, ArrayList<String> listOfFiles)
 	{
@@ -42,13 +45,12 @@ public class RokuLauncherWindow extends JFrame {
 		setSize(winWide, (RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * count));
 		LayoutManager gl = new GridLayout(count+1, 1);//plus 1 for "close roku video option"
 		setLayout(gl);
-		this.addWindowListener(new WindowAdapter()
-		{
-		    @Override
-		    public void windowClosing(WindowEvent e)
-		    {
-		      RokuLauncher.closeRokuVideo();
-		    }
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				RokuLauncher.closeRokuVideo();
+			}
 		});
 		if(RokuProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true")) {
 			setupTrayIcon();
@@ -75,6 +77,15 @@ public class RokuLauncherWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				RokuLauncher.launchChannel(
 						RokuProperties.ROKU_PATH.getPropertiesValue() + File.separator + b.getName());
+				toggleHighlightButton();
+				repaint();
+			}
+			public void toggleHighlightButton() {
+				Color color = b.getBackground();
+				if(selectedButton != null)
+					selectedButton.setBackground(color);
+				b.setBackground(HIGHLIGHT_COLOR);
+				selectedButton = b;
 			}
 		});
 		return b;
