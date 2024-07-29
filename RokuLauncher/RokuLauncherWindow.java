@@ -144,26 +144,26 @@ public class RokuLauncherWindow extends JFrame {
 					setVisible(true);
 				}
 			});
-		    close.addActionListener(new ActionListener() {
-		        @Override
-		        public void actionPerformed(ActionEvent e) {
-		        	RokuLauncher.closeRokuVideo();
-		            System.exit(0);           
-		        }
-		    });
-		    
-		    trayPopupMenu.add(open);
-		    trayPopupMenu.add(close);
-		    
-		    TrayIcon trayIcon = new TrayIcon(img, "Roku Launcher", trayPopupMenu);
-		    trayIcon.setImageAutoSize(true);
-		    //setup system tray
+			close.addActionListener(new ActionListener() {
+			    @Override
+			    public void actionPerformed(ActionEvent e) {
+			    	RokuLauncher.closeRokuVideo();
+			        System.exit(0);           
+			    }
+			});
+			
+			trayPopupMenu.add(open);
+			trayPopupMenu.add(close);
+			
+			TrayIcon trayIcon = new TrayIcon(img, "Roku Launcher", trayPopupMenu);
+			trayIcon.setImageAutoSize(true);
+			//setup system tray
 			SystemTray systemTray = SystemTray.getSystemTray();
 			systemTray.add(trayIcon);
 			
 			this.addWindowStateListener(new WindowStateListener() {
 				public void windowStateChanged(WindowEvent e) {
-					if(e.getNewState()==ICONIFIED){
+					if(e.getNewState()==ICONIFIED) {
 						setVisible(false);
 					}
 				}
@@ -172,6 +172,5 @@ public class RokuLauncherWindow extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 }
