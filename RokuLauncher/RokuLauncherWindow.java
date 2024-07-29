@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,14 +78,15 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private int windowWidth(ArrayList<String> listOfFiles)
 	{
-		String lenStr = "";
-		
-		for (String s : listOfFiles)
-		{
-			if(lenStr.length() < s.length())
-				lenStr = s;
-		}
-		int width = this.fontMetricsButton.stringWidth(lenStr);
+		int pad = 100;
+		Collections.sort(listOfFiles, new Comparator<String>(){
+		    public int compare(String s1, String s2) {
+		        return s2.length() - s1.length();
+		    }
+		});
+		String lenStr = listOfFiles.get(0);
+		int width = this.fontMetricsButton.stringWidth(lenStr) + pad;
+		System.out.println("Longest title character length: " + lenStr.length() + "; calculated width: " + width);
 		
 		return width > WINDOW_WIDTH_MIN ? width : WINDOW_WIDTH_MIN;
 	}

@@ -23,7 +23,6 @@ public class RokuLauncher {
 			if(f.getName().contains(filter))
 			{
 				files.add(f.getName());
-				System.out.println(f.getName());
 			}
 		}
 		return files;
