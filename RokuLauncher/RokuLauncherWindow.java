@@ -23,28 +23,52 @@ public class RokuLauncherWindow extends JFrame {
 	public RokuLauncherWindow(int count, ArrayList<String> listOfFiles)
 	{
 		setTitle("Roku Launcher");
-		LayoutManager gl = new GridLayout(count, 1);
-		setLayout(gl);
 		setLocation(RokuProperties.WINDOW_LOCATION_X.getPropertiesValueAsInt(), 
 				RokuProperties.WINDOW_LOCATION_Y.getPropertiesValueAsInt());
 		
-		addButtons(listOfFiles);
+		addChannelButtons(listOfFiles);
+		this.add(createCloseButton(this, "Close Roku Video"));//add close selection at bottom
 		int winWide = windowWidth(listOfFiles);
 		//setSize is dependent on button add for "fontMetricsButton" variable
-		setSize(winWide, RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * count);
+		setSize(winWide, (RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * count));
+		LayoutManager gl = new GridLayout(count+1, 1);//plus 1 for "close roku video option"
+		setLayout(gl);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	private void addButtons(ArrayList<String> listOfFiles)
+	private void addChannelButtons(ArrayList<String> listOfFiles)
 	{
 		JButton b = null;
 		for (String s : listOfFiles)
 		{
-			b = createButton(this, s);
+			b = createChannelButton(this, s);
 			this.add(b);
 		}
 		this.fontMetricsButton = b.getFontMetrics(b.getFont()); 		
+	}
+	
+	public JButton createChannelButton(JFrame jf, String title)
+	{
+		JButton b = createButton(jf, title);
+		b.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RokuLauncher.launchChannel(
+						RokuProperties.ROKU_PATH.getPropertiesValue() + File.separator + b.getName());
+			}
+		});
+		return b;
+	}
+	
+	public JButton createCloseButton(JFrame jf, String title)
+	{
+		JButton b = createButton(jf, title);
+		b.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RokuLauncher.closeRokuVideo();
+			}
+		});
+		return b;
 	}
 	
 	public JButton createButton(JFrame jf, String title)
@@ -53,12 +77,7 @@ public class RokuLauncherWindow extends JFrame {
 		
 		b.setName(title);
 		b.setText(titleCreator(title));
-		b.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				RokuLauncher.launchChannel(
-						RokuProperties.ROKU_PATH.getPropertiesValue() + File.separator + b.getName());
-			}
-		});
+		
 		return b;
 	}
 	

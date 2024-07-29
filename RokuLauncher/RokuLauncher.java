@@ -3,10 +3,12 @@ package RokuLauncher;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.lang.ProcessHandle;
 
 import javax.swing.SwingUtilities;
 
 public class RokuLauncher {
+	private static Process rokuChannelProcess = null;
 	
 	public static ArrayList<String> getOSFileList(String dir, String filter) 
 	{
@@ -26,8 +28,10 @@ public class RokuLauncher {
 	public static void executeProcess(String ...args)
 	{
 		try {
+			destroyRunningProcess();
+			
 			ProcessBuilder pb = new ProcessBuilder(args);
-			pb.start();
+			rokuChannelProcess = pb.start();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -35,10 +39,27 @@ public class RokuLauncher {
 		}
 	}
 	
+	public static boolean destroyRunningProcess()
+	{
+		if(rokuChannelProcess != null)
+		{
+			rokuChannelProcess.descendants().forEach(ProcessHandle::destroy);
+			rokuChannelProcess.destroy();
+			return true;
+		}
+		return false;
+	}
+	
 	public static void launchChannel(String filename)
 	{
 		executeProcess(RokuProperties.BROWSER_PATH.getPropertiesValue(), filename);
 	}
+	
+	public static void closeRokuVideo()
+	{
+		destroyRunningProcess();
+	}
+	
 	
 	public static void main(String [] args)
 	{
