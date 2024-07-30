@@ -2,38 +2,52 @@ package RokuLauncher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class PropertiesFileLoader {
 	
-	private static final HashMap<String,String> PROPERTIES = new HashMap<String,String>();
+	private static HashMap<String,String> PROPERTIES = null;
 	static {
 		readLauncherProperties();
 	}
 	
 	private static void readLauncherProperties() 
 	{
-		File file = new File(".\\RokuLauncher\\data\\Launcher.properties");//use location from .bat script
+		PROPERTIES = readProperties(".\\RokuLauncher\\data\\Launcher.properties", "=");
+		if(PROPERTIES == null)
+		{
+			PROPERTIES = readProperties(".\\src\\RokuLauncher\\data\\Launcher.properties", "=");
+		}
+	}
+	public static HashMap<String,String> readProperties(String location, String delimter)
+	{
+		HashMap<String,String> props = new HashMap<String,String>();
+		File file = new File(location);//use location from .bat script
 		if(!file.exists())//use eclipse workspace location
 		{
-			System.out.println(new File(".").getAbsolutePath());
-			file = new File(".\\src\\RokuLauncher\\data\\Launcher.properties");
+			return null;
 		}
+		
 		Scanner sc;
 		try {
 			sc = new Scanner(file);
 			while (sc.hasNextLine()) {
 				String s = sc.nextLine();
-				String [] ss = s.split("=");
-				PROPERTIES.put(ss[0], ss[1]);
+				String [] ss = s.split(delimter);
+				if(ss.length == 2)
+					props.put(ss[0], ss[1]);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return props;
 	}
+	
 	public static HashMap<String,String> getLauncherProperties()
 	{
 		return PROPERTIES;
@@ -53,5 +67,4 @@ public class PropertiesFileLoader {
 		}
 		return files;
 	}
-	
 }

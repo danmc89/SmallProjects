@@ -132,7 +132,7 @@ public class RokuLauncherWindow extends JFrame {
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				RokuLauncher.launchChannel(
-						VIDEO_PATHS_AND_TITLE.get(videoPos).getPath() + File.separator + b.getName());
+						VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideoURL(b.getName()));
 				toggleHighlightButton(innerPanel, selectedButton, b);
 			}
 		});

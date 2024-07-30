@@ -1,6 +1,8 @@
 package RokuLauncher;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Videos {
 	private static int counter = 0;
@@ -43,5 +45,12 @@ public class Videos {
 	public String getVideoStripFilter()
 	{
 		return this.videoStripFilter;
+	}
+	public String returnVideoURL(String video)
+	{
+		String propFile = path + File.separator + video;
+		HashMap<String,String> propCol = PropertiesFileLoader.readProperties(propFile, "=");
+		String url = propCol.get("URL");
+		return url;
 	}
 }

@@ -2,8 +2,6 @@ package RokuLauncher;
 
 import java.io.IOException;
 import java.lang.ProcessHandle;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.swing.SwingUtilities;
 
@@ -28,8 +26,8 @@ public class RokuLauncher {
 	{
 		if(rokuChannelProcess != null)
 		{
-			rokuChannelProcess.descendants().forEach(ProcessHandle::destroy);
 			rokuChannelProcess.destroy();
+			rokuChannelProcess.descendants().forEach(ProcessHandle::destroy);
 			return true;
 		}
 		return false;
