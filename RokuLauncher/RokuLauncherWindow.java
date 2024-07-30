@@ -132,7 +132,7 @@ public class RokuLauncherWindow extends JFrame {
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				RokuLauncher.launchChannel(
-						VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideoURL(b.getName()));
+						VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideo(b.getName()));
 				toggleHighlightButton(innerPanel, selectedButton, b);
 			}
 		});
@@ -293,14 +293,16 @@ public class RokuLauncherWindow extends JFrame {
 							RokuProperties.ROKU_CHANNEL_FILETYPE.getPropertiesValue()),
 						RokuProperties.ROKU_PATH.getPropertiesValue(),
 						RokuProperties.ROKU_TITLE.getPropertiesValue(),
-						RokuProperties.ROKU_CHANNEL_SUFFIX.getPropertiesValue()));
+						RokuProperties.ROKU_CHANNEL_SUFFIX.getPropertiesValue(),
+						RokuProperties.ROKU_CHANNEL_FILETYPE.getPropertiesValue()));
 		VIDEO_PATHS_AND_TITLE.add(
 				new Videos(PropertiesFileLoader.getOSFileList(
 						RokuProperties.YOUTUBE_PATH.getPropertiesValue(), 
 							RokuProperties.YOUTUBE_CHANNEL_FILETYPE.getPropertiesValue()),
 						RokuProperties.YOUTUBE_PATH.getPropertiesValue(),
 						RokuProperties.YOUTUBE_TITLE.getPropertiesValue(),
-						RokuProperties.YOUTUBE_CHANNEL_SUFFIX.getPropertiesValue()));
+						RokuProperties.YOUTUBE_CHANNEL_SUFFIX.getPropertiesValue(),
+						RokuProperties.YOUTUBE_CHANNEL_FILETYPE.getPropertiesValue()));
 	}
 	
 	private static void setNextVideoIndex(int curPosition, Direction direction)

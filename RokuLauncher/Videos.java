@@ -9,16 +9,19 @@ public class Videos {
 	
 	private int position = 0;
 	private ArrayList<String> videos = new ArrayList<String>();
-	private String path;
-	private String title;
-	private String videoStripFilter;
+	private String 
+		path,
+		title,
+		videoStripFilter,
+		filetype;
 	
-	public Videos(ArrayList<String> videos, String path, String title, String videoStripFilter)
+	public Videos(ArrayList<String> videos, String path, String title, String videoStripFilter, String filetype)
 	{
 		this.videos = videos;
 		this.path = path;
 		this.title = title;
 		this.videoStripFilter = videoStripFilter;
+		this.filetype = filetype;
 		position = counter++;
 	}
 	
@@ -46,11 +49,26 @@ public class Videos {
 	{
 		return this.videoStripFilter;
 	}
-	public String returnVideoURL(String video)
+	
+	public String getFileType()
 	{
-		String propFile = path + File.separator + video;
-		HashMap<String,String> propCol = PropertiesFileLoader.readProperties(propFile, "=");
-		String url = propCol.get("URL");
-		return url;
+		return filetype;
+	}
+	
+	public String returnVideo(String video)
+	{
+		String 
+			vid = "",
+			propFile = path + File.separator + video;
+		//if url type use the contents
+		if(FileType.getFileType(getFileType()) == FileType.URL)
+		{
+			HashMap<String,String> propCol = PropertiesFileLoader.readProperties(propFile, "=");
+			vid = propCol.get("URL");
+		}
+		//otherwise use the file itself
+		else
+			vid = propFile;
+		return vid;
 	}
 }
