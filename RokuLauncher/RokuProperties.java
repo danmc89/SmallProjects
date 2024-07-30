@@ -1,38 +1,39 @@
 package RokuLauncher;
 
 public enum RokuProperties {
-	APPLICATION_TITLE(PropertiesFileLoader.getLauncherProperties().get("application_title")),
-	ROKU_TITLE(PropertiesFileLoader.getLauncherProperties().get("roku_title")),
-	ROKU_PATH(PropertiesFileLoader.getLauncherProperties().get("roku_path")),
-	ROKU_CHANNEL_SUFFIX(PropertiesFileLoader.getLauncherProperties().get("roku_channel_suffix")),
-	ROKU_CHANNEL_FILETYPE(PropertiesFileLoader.getLauncherProperties().get("roku_channel_filetype")),
-	YOUTUBE_TITLE(PropertiesFileLoader.getLauncherProperties().get("youtube_title")),
-	YOUTUBE_PATH(PropertiesFileLoader.getLauncherProperties().get("youtube_path")),
-	YOUTUBE_CHANNEL_SUFFIX(PropertiesFileLoader.getLauncherProperties().get("youtube_channel_suffix")),
-	YOUTUBE_CHANNEL_FILETYPE(PropertiesFileLoader.getLauncherProperties().get("youtube_channel_filetype")),
-	BROWSER_PATH(PropertiesFileLoader.getLauncherProperties().get("browser_path")),
-	BUTTON_HEIGHT(PropertiesFileLoader.getLauncherProperties().get("button_height")),
-	WINDOW_WIDTH_MIN(PropertiesFileLoader.getLauncherProperties().get("button_width_min")),
-	WINDOW_LOCATION_X(PropertiesFileLoader.getLauncherProperties().get("window_location_x")),
-	WINDOW_LOCATION_Y(PropertiesFileLoader.getLauncherProperties().get("window_location_y")),
-	ICON(PropertiesFileLoader.getLauncherProperties().get("icon")),
-	SYSTEM_TRAY(PropertiesFileLoader.getLauncherProperties().get("system_tray")),
-	CLOSE_VIDEO_TEXT(PropertiesFileLoader.getLauncherProperties().get("close_button_text"));
+	APPLICATION_TITLE("application_title"),
+	BROWSER_PATH("browser_path"),
+	BUTTON_HEIGHT("button_height"),
+	WINDOW_WIDTH_MIN("button_width_min"),
+	WINDOW_LOCATION_X("window_location_x"),
+	WINDOW_LOCATION_Y("window_location_y"),
+	ICON("icon"),
+	SYSTEM_TRAY("system_tray"),
+	CLOSE_VIDEO_TEXT("close_button_text");
 	
 	private String propertiesValue = "";
+	private String propertiesKey = "";
 	
-	private	RokuProperties(String s)
+	private	RokuProperties(String propertiesKey)
 	{
-		this.propertiesValue = s;
+		this.propertiesKey = propertiesKey;
+		this.propertiesValue = PropertiesFileLoader.getLauncherProperties().get(propertiesKey);
+	}
+	
+	public String getPropertiesKey()
+	{
+		return this.propertiesKey;
 	}
 	
 	public String getPropertiesValue()
 	{
-		return propertiesValue;
+		return this.propertiesValue;
 	}
 	
 	public int getPropertiesValueAsInt()
 	{
 		return Integer.parseInt(propertiesValue);
 	}
+	
+	
 }
