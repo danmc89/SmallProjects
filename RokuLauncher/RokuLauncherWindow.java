@@ -45,6 +45,8 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private FontMetrics fontMetricsButton;
 	private JPanel innerPanel = new JPanel();
+	private JPanel innerPanel2 = new JPanel();
+//	private JScrollPane scrPane = new JScrollPane();
 	
 	public RokuLauncherWindow()
 	{
@@ -55,11 +57,14 @@ public class RokuLauncherWindow extends JFrame {
 		setLocation(RokuProperties.WINDOW_LOCATION_X.getPropertiesValueAsInt(), 
 				RokuProperties.WINDOW_LOCATION_Y.getPropertiesValueAsInt());
 		
-		LayoutManager gl = new GridLayout(listOfOptions.size()+2, 1);//plus 1 for "close roku video option"
 		BorderLayout bl = new BorderLayout();
-		innerPanel.setLayout(gl);
+//		scrPane = new JScrollPane(innerPanel);
+		
+		BorderLayout bl2 = new BorderLayout();
+		innerPanel2.setLayout(bl2);
+		innerPanel2.add(innerPanel, BorderLayout.NORTH);
 		this.setLayout(bl);
-		this.add(innerPanel, BorderLayout.CENTER);
+		this.add(innerPanel2, BorderLayout.CENTER);
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e)
@@ -75,9 +80,9 @@ public class RokuLauncherWindow extends JFrame {
 		//add close selection at bottom
 		createNavigationButtons();
 		
-		int winWide = windowWidth(videoPos) + 100; //+100 for nav buttons
+		int winWide = windowWidth() + 100; //+100 for nav buttons
 		//setSize is dependent on button add for "fontMetricsButton" variable
-		setSize(winWide, (RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * listOfOptions.size()));
+		this.setSize(winWide, (RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * listOfOptions.size()));
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -119,11 +124,15 @@ public class RokuLauncherWindow extends JFrame {
 		{
 			toggleHighlightButton(innerPanel, selectedButton, sel);
 		}
+		updateInnerPanelSize(listOfFiles);
 	}
 	
 	private void clearChannelButtons()
 	{
 		innerPanel.removeAll();
+		innerPanel2.removeAll();
+//		scrPane.removeAll();
+		this.remove(innerPanel2);
 	}
 	
 	public JButton createChannelButton(String title)
@@ -131,9 +140,17 @@ public class RokuLauncherWindow extends JFrame {
 		JButton b = createButton(title);
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RokuLauncher.executeProcess(VIDEO_PATHS_AND_TITLE.get(videoPos).getExeName(),
-						VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideo(b.getName()));
-				toggleHighlightButton(innerPanel, selectedButton, b);
+				String exe = VIDEO_PATHS_AND_TITLE.get(videoPos).getExeName();
+				if(exe != null && !exe.equals(""))
+				{
+					RokuLauncher.executeProcess(exe, VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideo(b.getName()));
+					toggleHighlightButton(innerPanel, selectedButton, b);
+				}
+				else
+				{
+					RokuLauncher.executeProcess(VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideo(b.getName()));
+					toggleHighlightButton(innerPanel, selectedButton, b);
+				}
 			}
 		});
 		return b;
@@ -209,13 +226,14 @@ public class RokuLauncherWindow extends JFrame {
 	private String titleCreator(String buttonTitle, String stripStr)
 	{
 		String replstr = "";
-		
+		if(stripStr == null || stripStr.equals(""))
+			return buttonTitle;
 		Pattern pat = Pattern.compile(stripStr, Pattern.CASE_INSENSITIVE);
 		Matcher mat = pat.matcher(buttonTitle);
 		return mat.replaceAll(replstr);
 	}
 	
-	private int windowWidth(int position)
+	private int windowWidth()
 	{
 		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(0).getVideos();
 		@SuppressWarnings("unchecked")
@@ -235,6 +253,17 @@ public class RokuLauncherWindow extends JFrame {
 		return width > RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt()
 				? width 
 				: RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
+	}
+	
+	private void updateInnerPanelSize(ArrayList<String> listOfOptions)
+	{
+		LayoutManager gl = new GridLayout(listOfOptions.size()+2, 1);//plus 2 for "close roku video option" and title
+		innerPanel.setLayout(gl);
+		
+//		scrPane = new JScrollPane(innerPanel);
+//		innerPanel2.add(scrPane, BorderLayout.NORTH);
+		innerPanel2.add(innerPanel, BorderLayout.NORTH);
+		this.add(innerPanel2, BorderLayout.CENTER);
 	}
 	
 	private void setupTrayIcon()

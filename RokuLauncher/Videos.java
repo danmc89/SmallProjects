@@ -68,7 +68,7 @@ public class Videos {
 			vid = "",
 			propFile = path + File.separator + video;
 		//if url type use the contents
-		if(FileType.getFileType(getFileType()) == FileType.URL)
+		if(FileType.getFileType(getFileType()) == FileType.URL && (this.exeName != null && !this.exeName.equals("")))
 		{
 			HashMap<String,String> propCol = PropertiesFileLoader.readProperties(propFile, "=");
 			vid = propCol.get("URL");
