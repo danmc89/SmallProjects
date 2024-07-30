@@ -63,7 +63,7 @@ public class RokuLauncherWindow extends JFrame {
 		
 		BorderLayout bl2 = new BorderLayout();
 		innerPanel2.setLayout(bl2);
-		innerPanel2.add(scrPane, BorderLayout.CENTER);
+		innerPanel2.add(scrPane, BorderLayout.NORTH);
 		this.setLayout(bl);
 		this.add(innerPanel2, BorderLayout.CENTER);
 		this.addWindowListener(new WindowAdapter() {
@@ -81,7 +81,7 @@ public class RokuLauncherWindow extends JFrame {
 		//add close selection at bottom
 		createNavigationButtons();
 		
-		int winWide = windowWidth() + 100; //+100 for nav buttons
+		int winWide = windowWidth() + 125; //+100 for nav buttons + 25 scrollbar
 		//setSize is dependent on button add for "fontMetricsButton" variable
 		this.setSize(winWide, (RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * listOfOptions.size()));
 		
