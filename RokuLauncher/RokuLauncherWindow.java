@@ -231,7 +231,7 @@ public class RokuLauncherWindow extends JFrame {
 		});
 		String lenStr = titleCreator(listOfFiles.get(0), filter);
 		int width = this.fontMetricsButton.stringWidth(lenStr) + pad;
-		System.out.println("Longest title character length: " + lenStr.length() + "; calculated width: " + width);
+		LoggingMessages.printOut("Longest title character length: " + lenStr.length() + "; calculated width: " + width);
 		
 		return width > RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt()
 				? width 

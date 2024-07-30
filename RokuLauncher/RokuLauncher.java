@@ -35,9 +35,7 @@ public class RokuLauncher {
 	
 	public static void launchChannel(String filename)
 	{
-//		Path currentRelativePath = Paths.get("");
-//		String s = currentRelativePath.toAbsolutePath().toString();
-//		System.out.println("Current absolute path is: " + s);
+		LoggingMessages.printCurrentPath();
 		executeProcess(RokuProperties.BROWSER_PATH.getPropertiesValue(), filename);
 	}
 	
