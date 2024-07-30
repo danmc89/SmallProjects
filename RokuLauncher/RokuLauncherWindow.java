@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 /**
@@ -46,7 +47,7 @@ public class RokuLauncherWindow extends JFrame {
 	private FontMetrics fontMetricsButton;
 	private JPanel innerPanel = new JPanel();
 	private JPanel innerPanel2 = new JPanel();
-//	private JScrollPane scrPane = new JScrollPane();
+	private JScrollPane scrPane = null;
 	
 	public RokuLauncherWindow()
 	{
@@ -58,11 +59,11 @@ public class RokuLauncherWindow extends JFrame {
 				RokuProperties.WINDOW_LOCATION_Y.getPropertiesValueAsInt());
 		
 		BorderLayout bl = new BorderLayout();
-//		scrPane = new JScrollPane(innerPanel);
+		scrPane = new JScrollPane(innerPanel);
 		
 		BorderLayout bl2 = new BorderLayout();
 		innerPanel2.setLayout(bl2);
-		innerPanel2.add(innerPanel, BorderLayout.NORTH);
+		innerPanel2.add(scrPane, BorderLayout.CENTER);
 		this.setLayout(bl);
 		this.add(innerPanel2, BorderLayout.CENTER);
 		this.addWindowListener(new WindowAdapter() {
@@ -131,7 +132,7 @@ public class RokuLauncherWindow extends JFrame {
 	{
 		innerPanel.removeAll();
 		innerPanel2.removeAll();
-//		scrPane.removeAll();
+		scrPane.removeAll();
 		this.remove(innerPanel2);
 	}
 	
@@ -179,6 +180,7 @@ public class RokuLauncherWindow extends JFrame {
 		
 		b.setName(title);
 		b.setText(titleCreator(title, filter));
+		b.setMaximumSize(new Dimension(100, 100));
 		
 		return b;
 	}
@@ -260,9 +262,14 @@ public class RokuLauncherWindow extends JFrame {
 		LayoutManager gl = new GridLayout(listOfOptions.size()+2, 1);//plus 2 for "close roku video option" and title
 		innerPanel.setLayout(gl);
 		
-//		scrPane = new JScrollPane(innerPanel);
-//		innerPanel2.add(scrPane, BorderLayout.NORTH);
-		innerPanel2.add(innerPanel, BorderLayout.NORTH);
+		scrPane = new JScrollPane(innerPanel);
+		if(listOfOptions.size() < RokuProperties.MAX_NUMBER_OPTIONS.getPropertiesValueAsInt()) {
+			innerPanel2.add(scrPane, BorderLayout.NORTH);
+		}
+		else {
+			//center for scrolling...
+			innerPanel2.add(scrPane, BorderLayout.CENTER);
+		}
 		this.add(innerPanel2, BorderLayout.CENTER);
 	}
 	

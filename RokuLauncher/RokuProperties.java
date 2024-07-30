@@ -9,7 +9,8 @@ public enum RokuProperties {
 	WINDOW_LOCATION_Y("window_location_y"),
 	ICON("icon"),
 	SYSTEM_TRAY("system_tray"),
-	CLOSE_VIDEO_TEXT("close_button_text");
+	CLOSE_VIDEO_TEXT("close_button_text"),
+	MAX_NUMBER_OPTIONS("max_number_options");
 	
 	private String 
 		propertiesValue = "",
