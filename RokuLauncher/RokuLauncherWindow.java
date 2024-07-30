@@ -131,7 +131,7 @@ public class RokuLauncherWindow extends JFrame {
 		JButton b = createButton(title);
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RokuLauncher.launchChannel(
+				RokuLauncher.executeProcess(VIDEO_PATHS_AND_TITLE.get(videoPos).getExeName(),
 						VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideo(b.getName()));
 				toggleHighlightButton(innerPanel, selectedButton, b);
 			}
@@ -208,8 +208,7 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private String titleCreator(String buttonTitle, String stripStr)
 	{
-		String 
-			replstr = "";
+		String replstr = "";
 		
 		Pattern pat = Pattern.compile(stripStr, Pattern.CASE_INSENSITIVE);
 		Matcher mat = pat.matcher(buttonTitle);
@@ -264,7 +263,6 @@ public class RokuLauncherWindow extends JFrame {
 			});
 			trayPopupMenu.add(close);
 			
-			
 			SystemTray systemTray = SystemTray.getSystemTray();
 			TrayIcon trayIcon = new TrayIcon(img, "Roku Launcher", trayPopupMenu);
 			
@@ -291,13 +289,17 @@ public class RokuLauncherWindow extends JFrame {
 		for(String k : extList)
 		{
 			LoggingMessages.printOut(k);
-			VIDEO_PATHS_AND_TITLE.add(new Videos(PropertiesFileLoader.getOSFileList(
-					ExtendableProperties._PATH.getPropertiesValue(k),
-					ExtendableProperties._CHANNEL_FILETYPE.getPropertiesValue(k)),
+			VIDEO_PATHS_AND_TITLE.add(
+				new Videos(PropertiesFileLoader.getOSFileList(
+						ExtendableProperties._PATH.getPropertiesValue(k),
+						ExtendableProperties._CHANNEL_FILETYPE.getPropertiesValue(k)),
 					ExtendableProperties._PATH.getPropertiesValue(k),
 					ExtendableProperties._TITLE.getPropertiesValue(k),
 					ExtendableProperties._CHANNEL_SUFFIX.getPropertiesValue(k),
-					ExtendableProperties._CHANNEL_FILETYPE.getPropertiesValue(k)));
+					ExtendableProperties._CHANNEL_FILETYPE.getPropertiesValue(k),
+					ExtendableProperties._EXE_PATH.getPropertiesValue(k)
+				)
+			);
 		}
 	}
 	

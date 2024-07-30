@@ -8,6 +8,7 @@ public enum ExtendableProperties {
 	_PATH("_path"),
 	_CHANNEL_SUFFIX("_channel_suffix"),
 	_CHANNEL_FILETYPE("_channel_filetype"),
+	_EXE_PATH("_exe_path"),
 	EXTENDED_LIST("extended_list");
 	
 	private String propertiesKey = "";

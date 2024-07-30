@@ -13,15 +13,17 @@ public class Videos {
 		path,
 		title,
 		videoStripFilter,
-		filetype;
+		filetype,
+		exeName;
 	
-	public Videos(ArrayList<String> videos, String path, String title, String videoStripFilter, String filetype)
+	public Videos(ArrayList<String> videos, String path, String title, String videoStripFilter, String filetype, String exeName)
 	{
 		this.videos = videos;
 		this.path = path;
 		this.title = title;
 		this.videoStripFilter = videoStripFilter;
 		this.filetype = filetype;
+		this.exeName = exeName;
 		position = counter++;
 	}
 	
@@ -43,6 +45,11 @@ public class Videos {
 	public int getPosition()
 	{
 		return this.position;
+	}
+	
+	public String getExeName()
+	{
+		return this.exeName;
 	}
 	
 	public String getVideoStripFilter()

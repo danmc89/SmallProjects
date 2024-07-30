@@ -33,12 +33,6 @@ public class RokuLauncher {
 		return false;
 	}
 	
-	public static void launchChannel(String filename)
-	{
-		LoggingMessages.printCurrentPath();
-		executeProcess(RokuProperties.BROWSER_PATH.getPropertiesValue(), filename);
-	}
-	
 	public static void closeRokuVideo()
 	{
 		destroyRunningProcess();
