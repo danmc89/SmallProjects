@@ -2,6 +2,7 @@ package RokuLauncher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -33,10 +34,24 @@ public class PropertiesFileLoader {
 			e.printStackTrace();
 		}
 	}
-	
 	public static HashMap<String,String> getLauncherProperties()
 	{
 		return PROPERTIES;
+	}
+	
+	public static ArrayList<String> getOSFileList(String dir, String filter) 
+	{
+		ArrayList<String> files = new ArrayList<String>();
+		File [] fs = new File(dir).listFiles();
+		
+		for (File f : fs)
+		{
+			if(f.getName().contains(filter))
+			{
+				files.add(f.getName());
+			}
+		}
+		return files;
 	}
 	
 }
