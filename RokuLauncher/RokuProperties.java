@@ -11,8 +11,9 @@ public enum RokuProperties {
 	SYSTEM_TRAY("system_tray"),
 	CLOSE_VIDEO_TEXT("close_button_text");
 	
-	private String propertiesValue = "";
-	private String propertiesKey = "";
+	private String 
+		propertiesValue = "",
+		propertiesKey = "";
 	
 	private	RokuProperties(String propertiesKey)
 	{

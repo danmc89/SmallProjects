@@ -11,11 +11,23 @@ public enum ExtendableProperties {
 	EXTENDED_LIST("extended_list");
 	
 	private String propertiesKey = "";
-	
-	//inital key is grouping prefix, followed by key and value;
 	private static final ArrayList<String> EXTENDED_LIST_KEYS = new ArrayList<String>();
 	static {
 		gatherExtended();
+	}
+	
+	private static void gatherExtended()
+	{
+		String [] extList = ExtendableProperties.EXTENDED_LIST.getPropertiesValue("").split(",");
+		for(String ext : extList)
+		{
+			LoggingMessages.printOut(ext);
+			EXTENDED_LIST_KEYS.add(ext);
+		}
+	}
+	public static ArrayList<String> getExtendedList()
+	{
+		return EXTENDED_LIST_KEYS;
 	}
 	
 	private ExtendableProperties(String propertiesKey)
@@ -36,20 +48,5 @@ public enum ExtendableProperties {
 	{
 		String propVal = PropertiesFileLoader.getLauncherProperties().get(prefix + propertiesKey);
 		return Integer.parseInt(propVal);
-	}
-	
-	public static ArrayList<String> getExtendedList()
-	{
-		return EXTENDED_LIST_KEYS;
-	}
-	
-	private static void gatherExtended()
-	{
-		String [] extList = ExtendableProperties.EXTENDED_LIST.getPropertiesValue("").split(",");
-		for(String ext : extList)
-		{
-			LoggingMessages.printOut(ext);
-			EXTENDED_LIST_KEYS.add(ext);
-		}
 	}
 }
