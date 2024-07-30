@@ -245,10 +245,12 @@ public class RokuLauncherWindow extends JFrame {
 	private int windowWidth(int position)
 	{
 		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(0).getVideos();
+		@SuppressWarnings("unchecked")
+		ArrayList<String> cloneList = (ArrayList<String>) listOfFiles.clone();
 		String filter = VIDEO_PATHS_AND_TITLE.get(0).getVideoStripFilter();
 		int pad = 100;
 		
-		Collections.sort(listOfFiles, new Comparator<String>(){
+		Collections.sort(cloneList, new Comparator<String>(){
 		    public int compare(String s1, String s2) {
 		        return s2.length() - s1.length();
 		    }
