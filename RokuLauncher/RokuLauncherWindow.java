@@ -2,6 +2,7 @@ package RokuLauncher;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
@@ -33,16 +34,17 @@ import javax.swing.JTextField;
  * Launcher window
  * Since a GUI using static values often as it's single instance
  */
-
 public class RokuLauncherWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private FontMetrics fontMetricsButton;
-	private JButton selectedButton;
-	private JPanel innerPanel = new JPanel();
 	private static final Color HIGHLIGHT_COLOR = new Color(238, 238, 238);
 	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
+	private static JButton selectedButton;
+	private static String selectedName;
 	private static int videoPos = 0;
+	
+	private FontMetrics fontMetricsButton;
+	private JPanel innerPanel = new JPanel();
 	
 	public RokuLauncherWindow()
 	{
@@ -80,46 +82,19 @@ public class RokuLauncherWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	private static void setupVideoLists()
+	private JButton findButton(String text)
 	{
-		VIDEO_PATHS_AND_TITLE.add(
-				new Videos(PropertiesFileLoader.getOSFileList(
-						RokuProperties.ROKU_PATH.getPropertiesValue(), 
-							RokuProperties.ROKU_CHANNEL_FILETYPE.getPropertiesValue()),
-						RokuProperties.ROKU_PATH.getPropertiesValue(),
-						RokuProperties.ROKU_TITLE.getPropertiesValue(),
-						RokuProperties.ROKU_CHANNEL_SUFFIX.getPropertiesValue()));
-		VIDEO_PATHS_AND_TITLE.add(
-				new Videos(PropertiesFileLoader.getOSFileList(
-						RokuProperties.YOUTUBE_PATH.getPropertiesValue(), 
-							RokuProperties.YOUTUBE_CHANNEL_FILETYPE.getPropertiesValue()),
-						RokuProperties.YOUTUBE_PATH.getPropertiesValue(),
-						RokuProperties.YOUTUBE_TITLE.getPropertiesValue(),
-						RokuProperties.YOUTUBE_CHANNEL_SUFFIX.getPropertiesValue()));
-	}
-	
-	private static void setNextVideoIndex(int curPosition, Direction direction)
-	{
-		int 
-			indexEnd = VIDEO_PATHS_AND_TITLE.size()-1,
-			indexReturn = 0;
-		
-		switch (direction) {
-			case FORWARD:
-				if(indexEnd < curPosition + 1)
-					indexReturn = 0;
-				else
-					indexReturn = curPosition + 1;
+		if (text == null)
+			return null;
+		JButton b = null;
+		for (Component c : innerPanel.getComponents())
+		{
+			if(c.getName() != null && c.getName().equals(text)){
+				b = (JButton) c;
 				break;
-				
-			case BACKWARD:
-				if(0 > curPosition - 1)
-					indexReturn = indexEnd;
-				else
-					indexReturn = curPosition - 1;
-				break;
+			}
 		}
-		videoPos = indexReturn;
+		return b;
 	}
 	
 	private void addChannelButtons(ArrayList<String> listOfFiles)
@@ -139,6 +114,11 @@ public class RokuLauncherWindow extends JFrame {
 		}
 		this.fontMetricsButton = b.getFontMetrics(b.getFont());
 		innerPanel.add(createCloseButton(RokuProperties.CLOSE_VIDEO_TEXT.getPropertiesValue()));
+		JButton sel = findButton(selectedName);
+		if(sel != null)
+		{
+			toggleHighlightButton(innerPanel, selectedButton, sel);
+		}
 	}
 	
 	private void clearChannelButtons()
@@ -153,15 +133,7 @@ public class RokuLauncherWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				RokuLauncher.launchChannel(
 						VIDEO_PATHS_AND_TITLE.get(videoPos).getPath() + File.separator + b.getName());
-				toggleHighlightButton();
-				repaint();
-			}
-			public void toggleHighlightButton() {
-				Color color = b.getBackground();
-				if(selectedButton != null)
-					selectedButton.setBackground(color);
-				b.setBackground(HIGHLIGHT_COLOR);
-				selectedButton = b;
+				toggleHighlightButton(innerPanel, selectedButton, b);
 			}
 		});
 		return b;
@@ -175,6 +147,8 @@ public class RokuLauncherWindow extends JFrame {
 				if(selectedButton != null)
 					selectedButton.setBackground(b.getBackground());
 				RokuLauncher.closeRokuVideo();
+				selectedButton = null;
+				selectedName = null;
 				repaint();
 			}
 		});
@@ -309,5 +283,58 @@ public class RokuLauncherWindow extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private static void setupVideoLists()
+	{
+		VIDEO_PATHS_AND_TITLE.add(
+				new Videos(PropertiesFileLoader.getOSFileList(
+						RokuProperties.ROKU_PATH.getPropertiesValue(), 
+							RokuProperties.ROKU_CHANNEL_FILETYPE.getPropertiesValue()),
+						RokuProperties.ROKU_PATH.getPropertiesValue(),
+						RokuProperties.ROKU_TITLE.getPropertiesValue(),
+						RokuProperties.ROKU_CHANNEL_SUFFIX.getPropertiesValue()));
+		VIDEO_PATHS_AND_TITLE.add(
+				new Videos(PropertiesFileLoader.getOSFileList(
+						RokuProperties.YOUTUBE_PATH.getPropertiesValue(), 
+							RokuProperties.YOUTUBE_CHANNEL_FILETYPE.getPropertiesValue()),
+						RokuProperties.YOUTUBE_PATH.getPropertiesValue(),
+						RokuProperties.YOUTUBE_TITLE.getPropertiesValue(),
+						RokuProperties.YOUTUBE_CHANNEL_SUFFIX.getPropertiesValue()));
+	}
+	
+	private static void setNextVideoIndex(int curPosition, Direction direction)
+	{
+		int 
+			indexEnd = VIDEO_PATHS_AND_TITLE.size()-1,
+			indexReturn = 0;
+		
+		switch (direction) {
+			case FORWARD:
+				if(indexEnd < curPosition + 1)
+					indexReturn = 0;
+				else
+					indexReturn = curPosition + 1;
+				break;
+				
+			case BACKWARD:
+				if(0 > curPosition - 1)
+					indexReturn = indexEnd;
+				else
+					indexReturn = curPosition - 1;
+				break;
+		}
+		videoPos = indexReturn;
+	}
+	
+	private static void toggleHighlightButton(Component c, JButton selButton, JButton curButton) {
+		Color color = curButton.getBackground();
+		if(selButton != null)
+			selButton.setBackground(color);
+		curButton.setBackground(HIGHLIGHT_COLOR);
+		selButton = curButton;
+		selectedName = curButton.getName();
+		selectedButton = curButton;
+		c.repaint();
 	}
 }
