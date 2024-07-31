@@ -1,4 +1,5 @@
-**Project is intended as a video launcher/manager for selecting/switching video links on a secondary montior**
+**Project's intention is as a video launcher/manager capable of selecting/switching video links**
+**desired for viewing on a secondary montior**
 **can be extended with additional titled sections and video lists added by editing the launcher.properties file**
 
 Requires Java 9 jdk or greater for ProcessHandle
