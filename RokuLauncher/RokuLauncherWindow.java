@@ -40,6 +40,14 @@ public class RokuLauncherWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final Color HIGHLIGHT_COLOR = new Color(238, 238, 238);
 	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
+	private static final int //TODO cleanup calculation here
+		NAV_BUTTON_WIDTH = 50, 
+		NAV_BUTTON_HEIGHT = 100,
+		SCROLL_BAR_WIDTH = 25;
+	private static final String 
+		NAV_BUTTON_WEST = "<",
+		NAV_BUTTON_EAST = ">";
+	
 	private static JButton selectedButton;
 	private static String selectedName;
 	private static int videoPos = 0;
@@ -81,7 +89,7 @@ public class RokuLauncherWindow extends JFrame {
 		//add close selection at bottom
 		createNavigationButtons();
 		
-		int winWide = windowWidth() + 125; //+100 for nav buttons + 25 scrollbar
+		int winWide = windowWidth() + (NAV_BUTTON_WIDTH * 2) + SCROLL_BAR_WIDTH; //+100 for nav buttons + 25 scrollbar
 		//setSize is dependent on button add for "fontMetricsButton" variable
 		this.setSize(winWide, (RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * listOfOptions.size()));
 		
@@ -180,7 +188,6 @@ public class RokuLauncherWindow extends JFrame {
 		
 		b.setName(title);
 		b.setText(titleCreator(title, filter));
-		b.setMaximumSize(new Dimension(100, 100));
 		
 		return b;
 	}
@@ -194,12 +201,12 @@ public class RokuLauncherWindow extends JFrame {
 			blW = new BorderLayout(),
 			blE = new BorderLayout();
 		JButton 
-			navW = createButton("<"),
-			navE = createButton(">");
+			navW = createButton(NAV_BUTTON_WEST),
+			navE = createButton(NAV_BUTTON_EAST);
 		
 		jpW.setLayout(blW);
 		jpE.setLayout(blE);
-		navW.setMaximumSize(new Dimension(100, 100));
+		navW.setMaximumSize(new Dimension(NAV_BUTTON_WIDTH, NAV_BUTTON_HEIGHT));
 		navW.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -209,7 +216,7 @@ public class RokuLauncherWindow extends JFrame {
 				paintComponents(getGraphics());
 			}
 		});
-		navE.setMaximumSize(new Dimension(50, 100));
+		navE.setMaximumSize(new Dimension(NAV_BUTTON_WIDTH, NAV_BUTTON_HEIGHT));
 		navE.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

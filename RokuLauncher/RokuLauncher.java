@@ -12,7 +12,6 @@ public class RokuLauncher {
 	{
 		try {
 			destroyRunningProcess();
-			
 			ProcessBuilder pb = new ProcessBuilder(args);
 			rokuChannelProcess = pb.start();
 			
