@@ -64,7 +64,7 @@ public class RokuLauncherWindow extends JFrame {
 	private FontMetrics fontMetricsButton;
 	private JPanel 
 		innerPanel = new JPanel(),
-		innerPanel2 = new JPanel();
+		innerPanel2 = new JPanel();//scrollbar crap
 	private JScrollPane scrPane = null;
 	private TrayIcon launcherTrayIcon = null;
 	
@@ -194,7 +194,7 @@ public class RokuLauncherWindow extends JFrame {
 		this.remove(innerPanel2);
 	}
 	
-	public JButton createChannelButton(String title)
+	private JButton createChannelButton(String title)
 	{
 		JButton b = createButton(title);
 		b.addActionListener(new ActionListener() {
@@ -215,7 +215,7 @@ public class RokuLauncherWindow extends JFrame {
 		return b;
 	}
 	
-	public JButton createCloseButton(String title)
+	private JButton createCloseButton(String title)
 	{
 		JButton b = createButton(title);
 		b.addActionListener(new ActionListener() {
@@ -231,7 +231,7 @@ public class RokuLauncherWindow extends JFrame {
 		return b;
 	}
 	
-	public JButton createButton(String title)
+	private JButton createButton(String title)
 	{
 		String filter = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideoStripFilter();
 		JButton b = new JButton();
@@ -242,7 +242,7 @@ public class RokuLauncherWindow extends JFrame {
 		return b;
 	}
 	
-	public void createNavigationButtons()
+	private void createNavigationButtons()
 	{
 		JPanel 
 			jpW = new JPanel(),

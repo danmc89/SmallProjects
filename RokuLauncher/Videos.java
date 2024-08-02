@@ -16,7 +16,12 @@ public class Videos {
 		filetype,
 		exeName;
 	
-	public Videos(ArrayList<String> videos, String path, String title, String videoStripFilter, String filetype, String exeName)
+	public Videos(ArrayList<String> videos, 
+			String path, 
+			String title, 
+			String videoStripFilter, 
+			String filetype, 
+			String exeName)
 	{
 		this.videos = videos;
 		this.path = path;
@@ -68,7 +73,7 @@ public class Videos {
 			vid = "",
 			propFile = path + File.separator + video;
 		//if url type use the contents
-		if(FileType.getFileType(getFileType()) == FileType.URL && (this.exeName != null && !this.exeName.equals("")))
+		if(FileType.getFileType(getFileType()) == FileType.URL)
 		{
 			HashMap<String,String> propCol = PropertiesFileLoader.readProperties(propFile, "=");
 			vid = propCol.get("URL");
