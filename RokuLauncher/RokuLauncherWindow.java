@@ -43,7 +43,7 @@ public class RokuLauncherWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final Color HIGHLIGHT_COLOR = new Color(238, 238, 238);
 	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
-	private static final int //TODO cleanup calculation here
+	private static final int
 		NAV_BUTTON_WIDTH = 50, 
 		NAV_BUTTON_HEIGHT = 100,
 		SCROLL_BAR_WIDTH = 25;
@@ -64,9 +64,13 @@ public class RokuLauncherWindow extends JFrame {
 	private FontMetrics fontMetricsButton;
 	private JPanel 
 		innerPanel = new JPanel(),
-		innerPanel2 = new JPanel();//scrollbar crap
+		innerPanel2 = new JPanel();//using for scrollbar
 	private JScrollPane scrPane = null;
 	private TrayIcon launcherTrayIcon = null;
+	
+//	private int widthCalc = 0;
+	private int heightCalc = 0;
+	private int maxScrollBarSize = 20; //TODO have calc but sequence of events
 	
 	public RokuLauncherWindow()
 	{
@@ -77,6 +81,7 @@ public class RokuLauncherWindow extends JFrame {
 		setTitle(RokuProperties.APPLICATION_TITLE.getPropertiesValue());
 		setLocation(RokuProperties.WINDOW_LOCATION_X.getPropertiesValueAsInt(), 
 				RokuProperties.WINDOW_LOCATION_Y.getPropertiesValueAsInt());
+		heightCalc = RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * listOfOptions.size();
 		
 		BorderLayout bl = new BorderLayout();
 		scrPane = new JScrollPane(innerPanel);
@@ -95,12 +100,10 @@ public class RokuLauncherWindow extends JFrame {
 		});
 		
 		addChannelButtons(listOfOptions);
-		//add close selection at bottom
 		createNavigationButtons();
 		
-		int winWide = windowWidth() + (NAV_BUTTON_WIDTH * 2) + SCROLL_BAR_WIDTH; //+100 for nav buttons + 25 scrollbar
-		//setSize is dependent on button add for "fontMetricsButton" variable
-		this.setSize(winWide, (RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * listOfOptions.size()));
+		int winWide = windowWidth() + (NAV_BUTTON_WIDTH * 2) + SCROLL_BAR_WIDTH;
+		this.setSize(winWide, heightCalc);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -163,13 +166,16 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private void addChannelButtons(ArrayList<String> listOfFiles)
 	{
+		clearInnerPanels();
+		
 		JButton b = null;
 		JTextField tf = new JTextField(VIDEO_PATHS_AND_TITLE.get(videoPos).getTitle());{
 			tf.setEditable(false);
 			tf.setHorizontalAlignment(JTextField.CENTER);
 			tf.setBackground(Color.GRAY);
 			tf.setForeground(HIGHLIGHT_COLOR);
-			innerPanel.add(tf, BorderLayout.CENTER);
+			
+		innerPanel.add(tf, BorderLayout.CENTER);
 		}
 		for (String s : listOfFiles)
 		{
@@ -183,10 +189,10 @@ public class RokuLauncherWindow extends JFrame {
 		{
 			toggleHighlightButton(innerPanel, selectedButton, sel);
 		}
-		updateInnerPanelSize(listOfFiles);
+		buildInnerPanels(listOfFiles);
 	}
 	
-	private void clearChannelButtons()
+	private void clearInnerPanels()
 	{
 		innerPanel.removeAll();
 		innerPanel2.removeAll();
@@ -260,7 +266,6 @@ public class RokuLauncherWindow extends JFrame {
 		navW.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				clearChannelButtons();
 				setNextVideoIndex(videoPos, Direction.BACKWARD);
 				addChannelButtons(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
 				paintComponents(getGraphics());
@@ -270,7 +275,6 @@ public class RokuLauncherWindow extends JFrame {
 		navE.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				clearChannelButtons();
 				setNextVideoIndex(videoPos, Direction.FORWARD);
 				addChannelButtons(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
 				paintComponents(getGraphics());
@@ -281,6 +285,24 @@ public class RokuLauncherWindow extends JFrame {
 		jpW.add(navW, BorderLayout.NORTH);
 		jpE.add(navE, BorderLayout.NORTH);
 	}
+	
+//	public void initialSizeCalc()
+//	{
+//		int 
+//			panelHeight = innerPanel2.getSize().height,
+//			buttonHeight = innerPanel.getComponent(innerPanel.getComponentCount()-1).getSize().height,
+//			limitHeightCount = (panelHeight/buttonHeight) - 2;//2 for title and close button
+//	
+//		int navWidth = navE.getSize().width;
+//		LoggingMessages.printOut("limit amount: " + limitHeightCount);
+//		widthCalc = windowWidth() + (navWidth * 2) + SCROLL_BAR_WIDTH;
+//		setSize(widthCalc, heightCalc);
+//		maxScrollBarSize = limitHeightCount;
+//		clearInnerPanels();
+//		buildInnerPanels(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
+//		
+//		paintComponents(getGraphics());
+//	}
 	
 	private String titleCreator(String buttonTitle, String stripStr)
 	{
@@ -314,13 +336,13 @@ public class RokuLauncherWindow extends JFrame {
 				: RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
 	}
 	
-	private void updateInnerPanelSize(ArrayList<String> listOfOptions)
+	private void buildInnerPanels(ArrayList<String> listOfOptions)
 	{
 		LayoutManager gl = new GridLayout(listOfOptions.size()+2, 1);//plus 2 for "close roku video option" and title
 		innerPanel.setLayout(gl);
 		
 		scrPane = new JScrollPane(innerPanel);
-		if(listOfOptions.size() < RokuProperties.MAX_NUMBER_OPTIONS.getPropertiesValueAsInt()) {
+		if(listOfOptions.size() <= maxScrollBarSize) {
 			innerPanel2.add(scrPane, BorderLayout.NORTH);
 		}
 		else {
@@ -333,7 +355,6 @@ public class RokuLauncherWindow extends JFrame {
 	private void reloadPropertiesFile()
 	{
 		VIDEO_PATHS_AND_TITLE.clear();
-		clearChannelButtons();
 		setupVideoLists();
 		PropertiesFileLoader.reloadLauncherProperties();
 		addChannelButtons(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
