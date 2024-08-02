@@ -10,6 +10,7 @@ import java.awt.LayoutManager;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
+import java.awt.Taskbar;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,8 +62,9 @@ public class RokuLauncherWindow extends JFrame {
 	private static int videoPos = 0;
 	
 	private FontMetrics fontMetricsButton;
-	private JPanel innerPanel = new JPanel();
-	private JPanel innerPanel2 = new JPanel();
+	private JPanel 
+		innerPanel = new JPanel(),
+		innerPanel2 = new JPanel();
 	private JScrollPane scrPane = null;
 	private TrayIcon launcherTrayIcon = null;
 	
@@ -140,6 +143,7 @@ public class RokuLauncherWindow extends JFrame {
 		
 		if(RokuProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true"))
 		{
+			setupTaskbar();
 			jmSystemTray = new JMenuItem(MENU_OPTION_MIN_TRAY);
 			jmSystemTray.addActionListener(new ActionListener() {
 				@Override
@@ -380,6 +384,17 @@ public class RokuLauncherWindow extends JFrame {
 		systemTray.remove(launcherTrayIcon);
 	}
 	
+	private void setupTaskbar()
+	{
+		File file = new File(RokuProperties.ICON.getPropertiesValue());
+		BufferedImage img;
+		try {
+			img = ImageIO.read(file);
+			this.setIconImage(img);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	private static void setupVideoLists()
 	{
 		ArrayList<String> extList = ExtendableProperties.getExtendedList();
