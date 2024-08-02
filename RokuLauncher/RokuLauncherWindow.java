@@ -10,7 +10,6 @@ import java.awt.LayoutManager;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
-import java.awt.Taskbar;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,6 +52,7 @@ public class RokuLauncherWindow extends JFrame {
 		NAV_BUTTON_EAST = ">",
 		SYSTEM_TRAY_OPEN_OPTION = "Open",
 		SYSTEM_TRAY_CLOSE_OPTION = "Close",
+		SYSTEM_TRAY_LABEL = "Video Launcher",
 		MENU_OPTION_FILE = "File",
 		MENU_OPTION_RELOAD ="Reload",
 		MENU_OPTION_MIN_TRAY = "Minimize to System Tray";
@@ -367,7 +367,7 @@ public class RokuLauncherWindow extends JFrame {
 			trayPopupMenu.add(close);
 			
 			SystemTray systemTray = SystemTray.getSystemTray();
-			launcherTrayIcon = new TrayIcon(img, "Roku Launcher", trayPopupMenu);
+			launcherTrayIcon = new TrayIcon(img, SYSTEM_TRAY_LABEL, trayPopupMenu);
 			
 			launcherTrayIcon.setImageAutoSize(true);
 			systemTray.add(launcherTrayIcon);
