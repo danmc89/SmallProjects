@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +26,9 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -46,7 +48,12 @@ public class RokuLauncherWindow extends JFrame {
 		SCROLL_BAR_WIDTH = 25;
 	private static final String 
 		NAV_BUTTON_WEST = "<",
-		NAV_BUTTON_EAST = ">";
+		NAV_BUTTON_EAST = ">",
+		SYSTEM_TRAY_OPEN_OPTION = "Open",
+		SYSTEM_TRAY_CLOSE_OPTION = "Close",
+		MENU_OPTION_FILE = "File",
+		MENU_OPTION_RELOAD ="Reload",
+		MENU_OPTION_MIN_TRAY = "Minimize to System Tray";
 	
 	private static JButton selectedButton;
 	private static String selectedName;
@@ -59,6 +66,7 @@ public class RokuLauncherWindow extends JFrame {
 	
 	public RokuLauncherWindow()
 	{
+		addMenuButtons();
 		setupVideoLists();
 		ArrayList<String> listOfOptions = VIDEO_PATHS_AND_TITLE.get(0).getVideos();
 		
@@ -109,6 +117,45 @@ public class RokuLauncherWindow extends JFrame {
 			}
 		}
 		return b;
+	}
+	
+	private void addMenuButtons()
+	{
+		JMenuBar menuBar;
+		JMenu menu;
+		JMenuItem 
+			jmReload,
+			jmSystemTray;
+		
+		//Create the menu bar.
+		menuBar = new JMenuBar();
+		menu = new JMenu(MENU_OPTION_FILE);
+		jmReload = new JMenuItem(MENU_OPTION_RELOAD);
+		jmReload.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				reloadPropertiesFile();
+				LoggingMessages.printOut(MENU_OPTION_RELOAD);
+			}
+		});
+		menu.add(jmReload);//end "reload" option add
+		
+		if(RokuProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true"))
+		{
+			jmSystemTray = new JMenuItem(MENU_OPTION_MIN_TRAY);
+			jmSystemTray.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					setVisible(false);
+					setExtendedState(NORMAL);
+					LoggingMessages.printOut(MENU_OPTION_MIN_TRAY);
+				}
+			});
+			menu.add(jmSystemTray);
+		}//end "minimize to system tray" add
+		
+		menuBar.add(menu);
+		this.setJMenuBar(menuBar);
 	}
 	
 	private void addChannelButtons(ArrayList<String> listOfFiles)
@@ -280,6 +327,15 @@ public class RokuLauncherWindow extends JFrame {
 		this.add(innerPanel2, BorderLayout.CENTER);
 	}
 	
+	private void reloadPropertiesFile()
+	{
+		VIDEO_PATHS_AND_TITLE.clear();
+		clearChannelButtons();
+		setupVideoLists();
+		PropertiesFileLoader.reloadLauncherProperties();
+		addChannelButtons(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
+		paintComponents(getGraphics());
+	}
 	private void setupTrayIcon()
 	{
 		try {
@@ -287,8 +343,8 @@ public class RokuLauncherWindow extends JFrame {
 			File file = new File(RokuProperties.ICON.getPropertiesValue());//use location from .bat script
 			BufferedImage img = ImageIO.read(file);
 			MenuItem 	
-				open = new MenuItem("Open"),
-				close = new MenuItem("Close");
+				open = new MenuItem(SYSTEM_TRAY_OPEN_OPTION),
+				close = new MenuItem(SYSTEM_TRAY_CLOSE_OPTION);
 			
 			open.addActionListener(new ActionListener() {
 				@Override
@@ -312,14 +368,14 @@ public class RokuLauncherWindow extends JFrame {
 			trayIcon.setImageAutoSize(true);
 			systemTray.add(trayIcon);
 			
-			this.addWindowStateListener(new WindowStateListener() {
-				public void windowStateChanged(WindowEvent e) {
-					if(e.getNewState()==ICONIFIED) {
-						setVisible(false);
-						setExtendedState(NORMAL);
-					}
-				}
-			});
+//			this.addWindowStateListener(new WindowStateListener() {
+//				public void windowStateChanged(WindowEvent e) {
+//					if(e.getNewState()==ICONIFIED) {
+//						setVisible(false);
+//						setExtendedState(NORMAL);
+//					}
+//				}
+//			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

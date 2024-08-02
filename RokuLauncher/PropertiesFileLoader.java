@@ -18,6 +18,17 @@ public class PropertiesFileLoader {
 		}
 	}
 	
+	public static void reloadLauncherProperties()
+	{
+		PROPERTIES.clear();
+		try {
+			readLauncherProperties();
+		} catch (FileNotFoundException e) {
+			LoggingMessages.printFileNotFound(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
 	private static void readLauncherProperties() throws FileNotFoundException 
 	{
 		HashMap<String, String> tmp;
