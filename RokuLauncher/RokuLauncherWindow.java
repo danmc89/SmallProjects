@@ -63,6 +63,7 @@ public class RokuLauncherWindow extends JFrame {
 	private JPanel innerPanel = new JPanel();
 	private JPanel innerPanel2 = new JPanel();
 	private JScrollPane scrPane = null;
+	private TrayIcon launcherTrayIcon = null;
 	
 	public RokuLauncherWindow()
 	{
@@ -89,9 +90,6 @@ public class RokuLauncherWindow extends JFrame {
 				RokuLauncher.closeRokuVideo();
 			}
 		});
-		if(RokuProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true")) {
-			setupTrayIcon();
-		}
 		
 		addChannelButtons(listOfOptions);
 		//add close selection at bottom
@@ -146,6 +144,7 @@ public class RokuLauncherWindow extends JFrame {
 			jmSystemTray.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					setupTrayIcon();
 					setVisible(false);
 					setExtendedState(NORMAL);
 					LoggingMessages.printOut(MENU_OPTION_MIN_TRAY);
@@ -350,6 +349,7 @@ public class RokuLauncherWindow extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setVisible(true);
+					destroySystemTray();
 				}
 			});
 			trayPopupMenu.add(open);
@@ -363,23 +363,21 @@ public class RokuLauncherWindow extends JFrame {
 			trayPopupMenu.add(close);
 			
 			SystemTray systemTray = SystemTray.getSystemTray();
-			TrayIcon trayIcon = new TrayIcon(img, "Roku Launcher", trayPopupMenu);
+			launcherTrayIcon = new TrayIcon(img, "Roku Launcher", trayPopupMenu);
 			
-			trayIcon.setImageAutoSize(true);
-			systemTray.add(trayIcon);
+			launcherTrayIcon.setImageAutoSize(true);
+			systemTray.add(launcherTrayIcon);
 			
-//			this.addWindowStateListener(new WindowStateListener() {
-//				public void windowStateChanged(WindowEvent e) {
-//					if(e.getNewState()==ICONIFIED) {
-//						setVisible(false);
-//						setExtendedState(NORMAL);
-//					}
-//				}
-//			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void destroySystemTray()
+	{
+		SystemTray systemTray = SystemTray.getSystemTray();
+		systemTray.remove(launcherTrayIcon);
 	}
 	
 	private static void setupVideoLists()
