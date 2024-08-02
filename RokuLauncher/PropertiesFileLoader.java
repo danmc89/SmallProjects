@@ -76,24 +76,19 @@ public class PropertiesFileLoader {
 	
 	private static void readLauncherProperties() throws FileNotFoundException 
 	{
-		HashMap<String, String> tmp;
+		HashMap<String, String> tmp = null;
 		String [] propLocs = new String [] {
 				".\\RokuLauncher\\data\\Launcher.properties",
 				".\\src\\RokuLauncher\\data\\Launcher.properties"};
-		
-		tmp = readProperties(propLocs[0], "=");
-		if(tmp != null)
-			PROPERTIES.putAll(tmp);
-		else
+		for(String loc : propLocs)
 		{
-			tmp = readProperties(propLocs[1], "=");
+			tmp = readProperties(loc, "=");
 			if(tmp != null)
 				PROPERTIES.putAll(tmp);
-			else
-			{
-				FileNotFoundException fe = new FileNotFoundException(propLocs[0] + " or " + propLocs[1]);
-				throw fe;
-			}
+		}
+		if (tmp == null) {
+			FileNotFoundException fe = new FileNotFoundException("Launcher.properties not found!");
+			throw fe;
 		}
 	}
 }
