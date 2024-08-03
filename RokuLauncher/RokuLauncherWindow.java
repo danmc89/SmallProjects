@@ -117,7 +117,7 @@ public class RokuLauncherWindow extends JFrame {
 				continue;
 			String nme = c.getName();
 			LoggingMessages.printOut(nme + ":to match:" + text + filter);
-			if(nme != null && nme.equals(text + filter)){
+			if(nme != null && (nme.equals(text + filter) || nme.equals(text))){
 				b = (JButton) c;
 				break;
 			}
