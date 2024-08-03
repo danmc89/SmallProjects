@@ -56,7 +56,7 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private static JButton selectedButton;
 	private static String selectedName;
-	private static int videoPos = 0;
+	private static int videosListPos = 0;
 	private static Color defaultBackgroundColorChannel = null;
 	
 	private JPanel 
@@ -169,8 +169,8 @@ public class RokuLauncherWindow extends JFrame {
 		clearInnerPanels();
 		
 		JButton b = null;
-		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos();
-		JLabel tf = new JLabel(VIDEO_PATHS_AND_TITLE.get(videoPos).getTitle());
+		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos();
+		JLabel tf = new JLabel(VIDEO_PATHS_AND_TITLE.get(videosListPos).getTitle());
 		{
 			tf.setOpaque(true);
 			tf.setHorizontalAlignment(JTextField.CENTER);
@@ -206,15 +206,15 @@ public class RokuLauncherWindow extends JFrame {
 		JButton b = createButton(title);
 		b.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String exe = VIDEO_PATHS_AND_TITLE.get(videoPos).getExeName();
+				String exe = VIDEO_PATHS_AND_TITLE.get(videosListPos).getExeName();
 				if(exe != null && !exe.equals(""))
 				{
-					RokuLauncher.executeProcess(exe, VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideo(b.getName()));
+					RokuLauncher.executeProcess(exe, VIDEO_PATHS_AND_TITLE.get(videosListPos).returnVideo(b.getName()));
 					toggleHighlightButton(innerPanel, selectedButton, b);
 				}
 				else
 				{
-					RokuLauncher.executeProcess(VIDEO_PATHS_AND_TITLE.get(videoPos).returnVideo(b.getName()));
+					RokuLauncher.executeProcess(VIDEO_PATHS_AND_TITLE.get(videosListPos).returnVideo(b.getName()));
 					toggleHighlightButton(innerPanel, selectedButton, b);
 				}
 			}
@@ -240,7 +240,7 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private JButton createButton(String title)
 	{
-		String filter = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideoStripFilter();
+		String filter = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideoStripFilter();
 		JButton b = new JButton();
 		
 		b.setName(title);
@@ -266,7 +266,7 @@ public class RokuLauncherWindow extends JFrame {
 		navW.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setNextVideoIndex(videoPos, Direction.BACKWARD);
+				setNextVideoIndex(videosListPos, Direction.BACKWARD);
 				addChannelButtons();
 				paintComponents(getGraphics());
 			}
@@ -274,7 +274,7 @@ public class RokuLauncherWindow extends JFrame {
 		navE.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setNextVideoIndex(videoPos, Direction.FORWARD);
+				setNextVideoIndex(videosListPos, Direction.FORWARD);
 				addChannelButtons();
 				paintComponents(getGraphics());
 			}
@@ -295,7 +295,7 @@ public class RokuLauncherWindow extends JFrame {
 		maxScrollBarSize = limitHeightCount;
 		
 		clearInnerPanels();
-		buildInnerPanels(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
+		buildInnerPanels(VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos());
 		
 		reloadPropertiesFile();
 	}
@@ -312,10 +312,10 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private int getWindowWidth()
 	{
-		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos();
+		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos();
 		@SuppressWarnings("unchecked")
 		ArrayList<String> cloneList = (ArrayList<String>) listOfFiles.clone();
-		String filter = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideoStripFilter();
+		String filter = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideoStripFilter();
 		
 		Collections.sort(cloneList, new Comparator<String>(){
 		    public int compare(String s1, String s2) {
@@ -451,26 +451,9 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private static void setNextVideoIndex(int curPosition, Direction direction)
 	{
-		int 
-			indexEnd = VIDEO_PATHS_AND_TITLE.size()-1,
-			indexReturn = 0;
-		
-		switch (direction) {
-			case FORWARD:
-				if(indexEnd < curPosition + 1)
-					indexReturn = 0;
-				else
-					indexReturn = curPosition + 1;
-				break;
-				
-			case BACKWARD:
-				if(0 > curPosition - 1)
-					indexReturn = indexEnd;
-				else
-					indexReturn = curPosition - 1;
-				break;
-		}
-		videoPos = indexReturn;
+		videosListPos = direction.getIndexDirectionNext(
+				curPosition, 
+				VIDEO_PATHS_AND_TITLE.size()-1);
 	}
 	
 	private static void toggleHighlightButton(Component c, JButton selButton, JButton curButton) {

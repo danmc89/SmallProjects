@@ -13,4 +13,28 @@ public enum Direction {
 	{
 		return dir;
 	}
+	
+	public int getIndexDirectionNext(int curPosition, int lastIndex)
+	{
+		int 
+			indexEnd = lastIndex,
+			indexReturn = 0;
+		
+		switch (this) {
+			case FORWARD:
+				if(indexEnd < curPosition + 1)
+					indexReturn = 0;
+				else
+					indexReturn = curPosition + 1;
+				break;
+				
+			case BACKWARD:
+				if(0 > curPosition - 1)
+					indexReturn = indexEnd;
+				else
+					indexReturn = curPosition - 1;
+				break;
+		}
+		return indexReturn;
+	}
 }
