@@ -12,9 +12,6 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -312,11 +309,6 @@ public class RokuLauncherWindow extends JFrame {
 		return mat.replaceAll(replstr);
 	}
 	
-//	private int getWindowWidth()
-//	{
-//		return RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
-//	}
-	
 	private int getWindowWidth()
 	{
 		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos();
@@ -486,7 +478,7 @@ public class RokuLauncherWindow extends JFrame {
 			selButton.setBackground(color);
 		curButton.setBackground(HIGHLIGHT_COLOR);
 		selButton = curButton;
-		selectedName = curButton.getName();
+		selectedName = curButton.getText();
 		selectedButton = curButton;
 		c.repaint();
 	}
