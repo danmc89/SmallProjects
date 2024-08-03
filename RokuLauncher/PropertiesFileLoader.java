@@ -84,7 +84,10 @@ public class PropertiesFileLoader {
 		{
 			tmp = readProperties(loc, "=");
 			if(tmp != null)
+			{
 				PROPERTIES.putAll(tmp);
+				break;
+			}
 		}
 		if (tmp == null) {
 			FileNotFoundException fe = new FileNotFoundException("Launcher.properties not found!");

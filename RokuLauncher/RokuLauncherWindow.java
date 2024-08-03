@@ -3,7 +3,6 @@ package RokuLauncher;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
@@ -15,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -43,10 +43,6 @@ public class RokuLauncherWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final Color HIGHLIGHT_COLOR = new Color(238, 238, 238);
 	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
-	private static final int
-		NAV_BUTTON_WIDTH = 50, 
-		NAV_BUTTON_HEIGHT = 100,
-		SCROLL_BAR_WIDTH = 25;
 	private static final String 
 		NAV_BUTTON_WEST = "<",
 		NAV_BUTTON_EAST = ">",
@@ -61,27 +57,27 @@ public class RokuLauncherWindow extends JFrame {
 	private static String selectedName;
 	private static int videoPos = 0;
 	
-	private FontMetrics fontMetricsButton;
 	private JPanel 
 		innerPanel = new JPanel(),
 		innerPanel2 = new JPanel();//using for scrollbar
 	private JScrollPane scrPane = null;
+	private JButton 
+		navW = null,
+		navE = null;
 	private TrayIcon launcherTrayIcon = null;
 	
-//	private int widthCalc = 0;
-	private int heightCalc = 0;
 	private int maxScrollBarSize = 20; //TODO have calc but sequence of events
 	
 	public RokuLauncherWindow()
 	{
+		int winHeight = RokuProperties.WINDOW_HEIGHT.getPropertiesValueAsInt();
+		
 		addMenuButtons();
 		setupVideoLists();
-		ArrayList<String> listOfOptions = VIDEO_PATHS_AND_TITLE.get(0).getVideos();
 		
 		setTitle(RokuProperties.APPLICATION_TITLE.getPropertiesValue());
 		setLocation(RokuProperties.WINDOW_LOCATION_X.getPropertiesValueAsInt(), 
 				RokuProperties.WINDOW_LOCATION_Y.getPropertiesValueAsInt());
-		heightCalc = RokuProperties.BUTTON_HEIGHT.getPropertiesValueAsInt() * listOfOptions.size();
 		
 		BorderLayout bl = new BorderLayout();
 		scrPane = new JScrollPane(innerPanel);
@@ -99,23 +95,29 @@ public class RokuLauncherWindow extends JFrame {
 			}
 		});
 		
-		addChannelButtons(listOfOptions);
 		createNavigationButtons();
+		addChannelButtons();
 		
-		int winWide = windowWidth() + (NAV_BUTTON_WIDTH * 2) + SCROLL_BAR_WIDTH;
-		this.setSize(winWide, heightCalc);
+		this.setSize(getWindowWidth(), winHeight);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	private JButton findButton(String text)
+	private JButton findButton(String text, String filter)
 	{
 		if (text == null)
 			return null;
+		if(filter == null)
+			filter = "";
 		JButton b = null;
+		
 		for (Component c : innerPanel.getComponents())
 		{
-			if(c.getName() != null && c.getName().equals(text)){
+			if (c == null)
+				continue;
+			String nme = c.getName();
+			LoggingMessages.printOut(nme + ":to match:" + text + filter);
+			if(nme != null && nme.equals(text + filter)){
 				b = (JButton) c;
 				break;
 			}
@@ -164,11 +166,13 @@ public class RokuLauncherWindow extends JFrame {
 		this.setJMenuBar(menuBar);
 	}
 	
-	private void addChannelButtons(ArrayList<String> listOfFiles)
+	private void addChannelButtons()
 	{
 		clearInnerPanels();
 		
 		JButton b = null;
+		String filter = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideoStripFilter();
+		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos();
 		JTextField tf = new JTextField(VIDEO_PATHS_AND_TITLE.get(videoPos).getTitle());{
 			tf.setEditable(false);
 			tf.setHorizontalAlignment(JTextField.CENTER);
@@ -182,9 +186,8 @@ public class RokuLauncherWindow extends JFrame {
 			b = createChannelButton(s);
 			innerPanel.add(b);
 		}
-		this.fontMetricsButton = b.getFontMetrics(b.getFont());
 		innerPanel.add(createCloseButton(RokuProperties.CLOSE_VIDEO_TEXT.getPropertiesValue()));
-		JButton sel = findButton(selectedName);
+		JButton sel = findButton(selectedName, filter);
 		if(sel != null)
 		{
 			toggleHighlightButton(innerPanel, selectedButton, sel);
@@ -256,27 +259,25 @@ public class RokuLauncherWindow extends JFrame {
 		BorderLayout
 			blW = new BorderLayout(),
 			blE = new BorderLayout();
-		JButton 
-			navW = createButton(NAV_BUTTON_WEST),
-			navE = createButton(NAV_BUTTON_EAST);
+		
+		navW = createButton(NAV_BUTTON_WEST);
+		navE = createButton(NAV_BUTTON_EAST);
 		
 		jpW.setLayout(blW);
 		jpE.setLayout(blE);
-		navW.setMaximumSize(new Dimension(NAV_BUTTON_WIDTH, NAV_BUTTON_HEIGHT));
 		navW.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setNextVideoIndex(videoPos, Direction.BACKWARD);
-				addChannelButtons(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
+				addChannelButtons();
 				paintComponents(getGraphics());
 			}
 		});
-		navE.setMaximumSize(new Dimension(NAV_BUTTON_WIDTH, NAV_BUTTON_HEIGHT));
 		navE.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setNextVideoIndex(videoPos, Direction.FORWARD);
-				addChannelButtons(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
+				addChannelButtons();
 				paintComponents(getGraphics());
 			}
 		});
@@ -290,18 +291,19 @@ public class RokuLauncherWindow extends JFrame {
 //	{
 //		int 
 //			panelHeight = innerPanel2.getSize().height,
-//			buttonHeight = innerPanel.getComponent(innerPanel.getComponentCount()-1).getSize().height,
-//			limitHeightCount = (panelHeight/buttonHeight) - 2;//2 for title and close button
+//			buttonHeight = navE.getSize().height,
+//			limitHeightCount = buttonHeight > 0 ? (panelHeight/buttonHeight) - 2:0;//2 for title and close button always
 //	
-//		int navWidth = navE.getSize().width;
+//		LoggingMessages.printOut("button height: " + buttonHeight);
+//		LoggingMessages.printOut("panel height: " + panelHeight);
 //		LoggingMessages.printOut("limit amount: " + limitHeightCount);
-//		widthCalc = windowWidth() + (navWidth * 2) + SCROLL_BAR_WIDTH;
-//		setSize(widthCalc, heightCalc);
 //		maxScrollBarSize = limitHeightCount;
+//		
 //		clearInnerPanels();
 //		buildInnerPanels(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
 //		
-//		paintComponents(getGraphics());
+//		reloadPropertiesFile();
+//		LoggingMessages.printOut(MENU_OPTION_RELOAD);
 //	}
 	
 	private String titleCreator(String buttonTitle, String stripStr)
@@ -314,27 +316,43 @@ public class RokuLauncherWindow extends JFrame {
 		return mat.replaceAll(replstr);
 	}
 	
-	private int windowWidth()
+	private int getWindowWidth()
 	{
-		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(0).getVideos();
-		@SuppressWarnings("unchecked")
-		ArrayList<String> cloneList = (ArrayList<String>) listOfFiles.clone();
-		String filter = VIDEO_PATHS_AND_TITLE.get(0).getVideoStripFilter();
-		int pad = 100;
-		
-		Collections.sort(cloneList, new Comparator<String>(){
-		    public int compare(String s1, String s2) {
-		        return s2.length() - s1.length();
-		    }
-		});
-		String lenStr = titleCreator(listOfFiles.get(0), filter);
-		int width = this.fontMetricsButton.stringWidth(lenStr) + pad;
-		LoggingMessages.printOut("Longest title character length: " + lenStr.length() + "; calculated width: " + width);
-		
-		return width > RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt()
-				? width 
-				: RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
+		return RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
 	}
+	
+//	private int getWindowWidth()
+//	{
+//		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos();
+//		@SuppressWarnings("unchecked")
+//		ArrayList<String> cloneList = (ArrayList<String>) listOfFiles.clone();
+//		String filter = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideoStripFilter();
+//		
+//		Collections.sort(cloneList, new Comparator<String>(){
+//		    public int compare(String s1, String s2) {
+//		        return s2.length() - s1.length();
+//		    }
+//		});
+//		String lenStr = titleCreator(cloneList.get(0), filter);
+//		JButton b = findButton(lenStr, filter);
+//		LoggingMessages.printOut(lenStr + b);
+//		
+//		LoggingMessages.printOut("Longest title character length: " + lenStr.length() );
+//		
+//		if(b == null)
+//		{
+//			return RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
+//		}
+//		FontMetrics fm = b.getFontMetrics(b.getFont());
+//		
+//		int width = fm.stringWidth(lenStr) + (navE.getSize().width * 2) + 
+//				RokuProperties.WINDOW_WIDTH_CALC_PAD.getPropertiesValueAsInt();
+//		LoggingMessages.printOut("Longest title character length: " + lenStr.length() + "; calculated width: " + width);
+//		
+//		return width > RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt()
+//				? width 
+//				: RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
+//	}
 	
 	private void buildInnerPanels(ArrayList<String> listOfOptions)
 	{
@@ -350,6 +368,12 @@ public class RokuLauncherWindow extends JFrame {
 			innerPanel2.add(scrPane, BorderLayout.CENTER);
 		}
 		this.add(innerPanel2, BorderLayout.CENTER);
+		
+		int width = getWindowWidth();
+		if(this.getSize().width < width)
+		{
+			this.setSize(getWindowWidth(), this.getSize().height);
+		}
 	}
 	
 	private void reloadPropertiesFile()
@@ -357,7 +381,7 @@ public class RokuLauncherWindow extends JFrame {
 		VIDEO_PATHS_AND_TITLE.clear();
 		setupVideoLists();
 		PropertiesFileLoader.reloadLauncherProperties();
-		addChannelButtons(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
+		addChannelButtons();
 		paintComponents(getGraphics());
 	}
 	private void setupTrayIcon()
