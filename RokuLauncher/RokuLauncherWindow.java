@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -169,9 +170,9 @@ public class RokuLauncherWindow extends JFrame {
 		
 		JButton b = null;
 		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos();
-		JTextField tf = new JTextField(VIDEO_PATHS_AND_TITLE.get(videoPos).getTitle());
+		JLabel tf = new JLabel(VIDEO_PATHS_AND_TITLE.get(videoPos).getTitle());
 		{
-			tf.setEditable(false);
+			tf.setOpaque(true);
 			tf.setHorizontalAlignment(JTextField.CENTER);
 			tf.setBackground(TITLE_COLOR_BACKGROUND);
 			tf.setForeground(TITLE_COLOR_FOREGROUND);
