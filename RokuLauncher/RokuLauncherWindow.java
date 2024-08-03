@@ -38,7 +38,10 @@ import javax.swing.JTextField;
 public class RokuLauncherWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private static final Color HIGHLIGHT_COLOR = new Color(238, 238, 238);
+	private static final Color 
+		HIGHLIGHT_COLOR = new Color(238, 238, 238),
+		TITLE_COLOR_FOREGROUND = new Color(100, 50, 150),
+		TITLE_COLOR_BACKGROUND = new Color(190, 190, 190);
 	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
 	private static final String 
 		NAV_BUTTON_WEST = "<",
@@ -53,6 +56,7 @@ public class RokuLauncherWindow extends JFrame {
 	private static JButton selectedButton;
 	private static String selectedName;
 	private static int videoPos = 0;
+	private static Color defaultBackgroundColorChannel = null;
 	
 	private JPanel 
 		innerPanel = new JPanel(),
@@ -63,7 +67,7 @@ public class RokuLauncherWindow extends JFrame {
 		navE = null;
 	private TrayIcon launcherTrayIcon = null;
 	
-	private int maxScrollBarSize = 0; //TODO have calc but sequence of events
+	private int maxScrollBarSize = 0;
 	
 	public RokuLauncherWindow()
 	{
@@ -90,7 +94,6 @@ public class RokuLauncherWindow extends JFrame {
 		addChannelButtons();
 		
 		this.setSize(getWindowWidth(), winHeight);
-		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -166,19 +169,20 @@ public class RokuLauncherWindow extends JFrame {
 		
 		JButton b = null;
 		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos();
-		JTextField tf = new JTextField(VIDEO_PATHS_AND_TITLE.get(videoPos).getTitle());{
+		JTextField tf = new JTextField(VIDEO_PATHS_AND_TITLE.get(videoPos).getTitle());
+		{
 			tf.setEditable(false);
 			tf.setHorizontalAlignment(JTextField.CENTER);
-			tf.setBackground(Color.GRAY);
-			tf.setForeground(HIGHLIGHT_COLOR);
-			
-		innerPanel.add(tf, BorderLayout.CENTER);
+			tf.setBackground(TITLE_COLOR_BACKGROUND);
+			tf.setForeground(TITLE_COLOR_FOREGROUND);
+			innerPanel.add(tf, BorderLayout.CENTER);
 		}
 		for (String s : listOfFiles)
 		{
 			b = createChannelButton(s);
 			innerPanel.add(b);
 		}
+		defaultBackgroundColorChannel = b.getBackground();
 		innerPanel.add(createCloseButton(RokuProperties.CLOSE_VIDEO_TEXT.getPropertiesValue()));
 		JButton sel = findButton(selectedName);
 		if(sel != null)
@@ -287,16 +291,12 @@ public class RokuLauncherWindow extends JFrame {
 			buttonHeight = navE.getSize().height,
 			limitHeightCount = buttonHeight > 0 ? (panelHeight/buttonHeight) - 2:0;//2 for title and close button always
 	
-		LoggingMessages.printOut("button height: " + buttonHeight);
-		LoggingMessages.printOut("panel height: " + panelHeight);
-		LoggingMessages.printOut("limit amount: " + limitHeightCount);
 		maxScrollBarSize = limitHeightCount;
 		
 		clearInnerPanels();
 		buildInnerPanels(VIDEO_PATHS_AND_TITLE.get(videoPos).getVideos());
 		
 		reloadPropertiesFile();
-		LoggingMessages.printOut(MENU_OPTION_RELOAD);
 	}
 	
 	private String titleCreator(String buttonTitle, String stripStr)
@@ -473,9 +473,8 @@ public class RokuLauncherWindow extends JFrame {
 	}
 	
 	private static void toggleHighlightButton(Component c, JButton selButton, JButton curButton) {
-		Color color = curButton.getBackground();
 		if(selButton != null)
-			selButton.setBackground(color);
+			selButton.setBackground(defaultBackgroundColorChannel);
 		curButton.setBackground(HIGHLIGHT_COLOR);
 		selButton = curButton;
 		selectedName = curButton.getText();
