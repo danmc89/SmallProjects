@@ -57,6 +57,7 @@ public class RokuLauncherWindow extends JFrame {
 	private static JButton selectedButton;
 	private static String selectedName;
 	private static int videosListPos = 0;
+	private static int maxScrollBarSize = 0;
 	private static Color defaultBackgroundColorChannel = null;
 	
 	private JPanel 
@@ -68,7 +69,6 @@ public class RokuLauncherWindow extends JFrame {
 		navE = null;
 	private TrayIcon launcherTrayIcon = null;
 	
-	private int maxScrollBarSize = 0;
 	
 	public RokuLauncherWindow()
 	{
