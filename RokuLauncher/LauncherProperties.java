@@ -1,7 +1,6 @@
 package RokuLauncher;
 
-public enum RokuProperties implements Properties{
-	APPLICATION_TITLE("application_title"),
+public enum LauncherProperties implements Properties{
 	BROWSER_PATH("browser_path"),
 	WINDOW_HEIGHT("window_height"),
 	WINDOW_WIDTH_MIN("window_width_min"),
@@ -9,13 +8,12 @@ public enum RokuProperties implements Properties{
 	WINDOW_LOCATION_Y("window_location_y"),
 	WINDOW_WIDTH_CALC_PAD("window_width_calc_pad"),
 	ICON("icon"),
-	SYSTEM_TRAY("system_tray"),
-	CLOSE_VIDEO_TEXT("close_button_text");
+	SYSTEM_TRAY("system_tray");
 	
 	private String propertiesKey;
 	private Paths path = Paths.LAUNCHER;
 	
-	private	RokuProperties(String propertiesKey)
+	private	LauncherProperties(String propertiesKey)
 	{
 		this.propertiesKey = propertiesKey;
 	}

@@ -59,14 +59,14 @@ public class RokuLauncherWindow extends JFrame {
 	
 	public RokuLauncherWindow()
 	{
-		int winHeight = RokuProperties.WINDOW_HEIGHT.getPropertiesValueAsInt();
+		int winHeight = LauncherProperties.WINDOW_HEIGHT.getPropertiesValueAsInt();
 		
 		addMenuButtons();
 		setupVideoLists();
 		
-		setTitle(RokuProperties.APPLICATION_TITLE.getPropertiesValue());
-		setLocation(RokuProperties.WINDOW_LOCATION_X.getPropertiesValueAsInt(), 
-				RokuProperties.WINDOW_LOCATION_Y.getPropertiesValueAsInt());
+		setTitle(WidgetTextProperties.APPLICATION_TITLE.getPropertiesValue());
+		setLocation(LauncherProperties.WINDOW_LOCATION_X.getPropertiesValueAsInt(), 
+				LauncherProperties.WINDOW_LOCATION_Y.getPropertiesValueAsInt());
 		
 		BorderLayout bl = new BorderLayout();
 		scrPane = new JScrollPane(innerPanel);
@@ -120,28 +120,28 @@ public class RokuLauncherWindow extends JFrame {
 		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
-		menu = new JMenu(GuiProperties.MENU_OPTION_FILE.getPropertiesValue());
-		jmReload = new JMenuItem(GuiProperties.MENU_OPTION_RELOAD.getPropertiesValue());
+		menu = new JMenu(WidgetTextProperties.MENU_OPTION_FILE.getPropertiesValue());
+		jmReload = new JMenuItem(WidgetTextProperties.MENU_OPTION_RELOAD.getPropertiesValue());
 		jmReload.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				reloadPropertiesFile();
-				LoggingMessages.printOut(GuiProperties.MENU_OPTION_RELOAD.getPropertiesValue());
+				LoggingMessages.printOut(WidgetTextProperties.MENU_OPTION_RELOAD.getPropertiesValue());
 			}
 		});
 		menu.add(jmReload);//end "reload" option add
 		
-		if(RokuProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true"))
+		if(LauncherProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true"))
 		{
 			setupTaskbar();
-			jmSystemTray = new JMenuItem(GuiProperties.MENU_OPTION_MIN_TRAY.getPropertiesValue());
+			jmSystemTray = new JMenuItem(WidgetTextProperties.MENU_OPTION_MIN_TRAY.getPropertiesValue());
 			jmSystemTray.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setupTrayIcon();
 					setVisible(false);
 					setExtendedState(NORMAL);
-					LoggingMessages.printOut(GuiProperties.MENU_OPTION_MIN_TRAY.getPropertiesValue());
+					LoggingMessages.printOut(WidgetTextProperties.MENU_OPTION_MIN_TRAY.getPropertiesValue());
 				}
 			});
 			menu.add(jmSystemTray);
@@ -162,8 +162,8 @@ public class RokuLauncherWindow extends JFrame {
 			tf.setOpaque(true);
 			tf.setHorizontalAlignment(JTextField.CENTER);
 			int [] 
-				c1 = GuiProperties.TITLE_COLOR_BACKGROUND.getPropertyValueAsIntArray(),
-				c2 = GuiProperties.TITLE_COLOR_FOREGROUND.getPropertyValueAsIntArray();
+				c1 = WidgetTextProperties.TITLE_COLOR_BACKGROUND.getPropertyValueAsIntArray(),
+				c2 = WidgetTextProperties.TITLE_COLOR_FOREGROUND.getPropertyValueAsIntArray();
 			tf.setBackground(new Color(c1[0], c1[1], c1[2]));
 			tf.setForeground(new Color(c2[0], c2[1], c2[2]));
 			innerPanel.add(tf, BorderLayout.CENTER);
@@ -174,7 +174,7 @@ public class RokuLauncherWindow extends JFrame {
 			innerPanel.add(b);
 		}
 		defaultBackgroundColorChannel = b.getBackground();
-		innerPanel.add(createCloseButton(RokuProperties.CLOSE_VIDEO_TEXT.getPropertiesValue()));
+		innerPanel.add(createCloseButton(WidgetTextProperties.CLOSE_VIDEO_TEXT.getPropertiesValue()));
 		JButton sel = findButton(selectedName);
 		if(sel != null)
 		{
@@ -248,8 +248,8 @@ public class RokuLauncherWindow extends JFrame {
 			blW = new BorderLayout(),
 			blE = new BorderLayout();
 		
-		navW = createButton(GuiProperties.NAV_BUTTON_WEST.getPropertiesValue());
-		navE = createButton(GuiProperties.NAV_BUTTON_EAST.getPropertiesValue());
+		navW = createButton(WidgetTextProperties.NAV_BUTTON_WEST.getPropertiesValue());
+		navE = createButton(WidgetTextProperties.NAV_BUTTON_EAST.getPropertiesValue());
 		
 		jpW.setLayout(blW);
 		jpE.setLayout(blE);
@@ -320,17 +320,17 @@ public class RokuLauncherWindow extends JFrame {
 		
 		if(b == null)
 		{
-			return RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
+			return LauncherProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
 		}
 		FontMetrics fm = b.getFontMetrics(b.getFont());
 		
 		int width = fm.stringWidth(lenStr) + (navE.getSize().width * 2) + 
-				RokuProperties.WINDOW_WIDTH_CALC_PAD.getPropertiesValueAsInt();
+				LauncherProperties.WINDOW_WIDTH_CALC_PAD.getPropertiesValueAsInt();
 		LoggingMessages.printOut("Longest title character length: " + lenStr.length() + "; calculated width: " + width);
 		
-		return width > RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt()
+		return width > LauncherProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt()
 				? width 
-				: RokuProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
+				: LauncherProperties.WINDOW_WIDTH_MIN.getPropertiesValueAsInt();
 	}
 	
 	private void buildInnerPanels(ArrayList<String> listOfOptions)
@@ -367,11 +367,11 @@ public class RokuLauncherWindow extends JFrame {
 	{
 		try {
 			PopupMenu trayPopupMenu = new PopupMenu();
-			File file = new File(RokuProperties.ICON.getPropertiesValue());//use location from .bat script
+			File file = new File(LauncherProperties.ICON.getPropertiesValue());//use location from .bat script
 			BufferedImage img = ImageIO.read(file);
 			MenuItem 	
-				open = new MenuItem(GuiProperties.SYSTEM_TRAY_OPEN_OPTION.getPropertiesValue()),
-				close = new MenuItem(GuiProperties.SYSTEM_TRAY_CLOSE_OPTION.getPropertiesValue());
+				open = new MenuItem(WidgetTextProperties.SYSTEM_TRAY_OPEN_OPTION.getPropertiesValue()),
+				close = new MenuItem(WidgetTextProperties.SYSTEM_TRAY_CLOSE_OPTION.getPropertiesValue());
 			
 			open.addActionListener(new ActionListener() {
 				@Override
@@ -391,7 +391,7 @@ public class RokuLauncherWindow extends JFrame {
 			trayPopupMenu.add(close);
 			
 			SystemTray systemTray = SystemTray.getSystemTray();
-			launcherTrayIcon = new TrayIcon(img, GuiProperties.SYSTEM_TRAY_LABEL.getPropertiesValue(), trayPopupMenu);
+			launcherTrayIcon = new TrayIcon(img, WidgetTextProperties.SYSTEM_TRAY_LABEL.getPropertiesValue(), trayPopupMenu);
 			
 			launcherTrayIcon.setImageAutoSize(true);
 			systemTray.add(launcherTrayIcon);
@@ -410,7 +410,7 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private void setupTaskbar()
 	{
-		File file = new File(RokuProperties.ICON.getPropertiesValue());
+		File file = new File(LauncherProperties.ICON.getPropertiesValue());
 		BufferedImage img;
 		try {
 			img = ImageIO.read(file);
@@ -449,7 +449,7 @@ public class RokuLauncherWindow extends JFrame {
 	private static void toggleHighlightButton(Component c, JButton selButton, JButton curButton) {
 		if(selButton != null)
 			selButton.setBackground(defaultBackgroundColorChannel);
-		curButton.setBackground(GuiProperties.HIGHLIGHT_COLOR.getPropertyValueAsColor());
+		curButton.setBackground(WidgetTextProperties.HIGHLIGHT_COLOR.getPropertyValueAsColor());
 		selButton = curButton;
 		selectedName = curButton.getText();
 		selectedButton = curButton;

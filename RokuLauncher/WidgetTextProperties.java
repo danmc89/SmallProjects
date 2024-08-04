@@ -1,7 +1,7 @@
 package RokuLauncher;
 
-public enum GuiProperties implements Properties{
-	
+public enum WidgetTextProperties implements Properties{
+	APPLICATION_TITLE("application_title"),
 	HIGHLIGHT_COLOR("highlight_color"),
 	TITLE_COLOR_FOREGROUND("title_color_foreground"),
 	TITLE_COLOR_BACKGROUND("title_color_background"),
@@ -12,12 +12,13 @@ public enum GuiProperties implements Properties{
 	SYSTEM_TRAY_LABEL("system_tray_label"),
 	MENU_OPTION_FILE("menu_option_file"),
 	MENU_OPTION_RELOAD("menu_option_reload"),
-	MENU_OPTION_MIN_TRAY("menu_option_min_tray");
+	MENU_OPTION_MIN_TRAY("menu_option_min_tray"),
+	CLOSE_VIDEO_TEXT("close_button_text");
 	
 	private String property;
-	private Paths path = Paths.GUI;
+	private Paths path = Paths.WIDGET_TEXT;
 	
-	private GuiProperties(String property)
+	private WidgetTextProperties(String property)
 	{
 		this.property = property;
 	}
