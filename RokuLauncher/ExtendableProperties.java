@@ -12,7 +12,7 @@ public enum ExtendableProperties implements Properties{
 	EXTENDED_LIST("extended_list");
 	
 	private String propertiesKey = "";
-	private Paths path = Paths.LAUNCHER;
+	private Paths path = Paths.EXTENDABLE;
 	
 	private static final ArrayList<String> EXTENDED_LIST_KEYS = new ArrayList<String>();
 	static {
