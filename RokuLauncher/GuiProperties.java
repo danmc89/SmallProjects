@@ -1,6 +1,6 @@
 package RokuLauncher;
 
-public enum GuiProperties implements PropertiesUtil{
+public enum GuiProperties implements Properties{
 	
 	HIGHLIGHT_COLOR("highlight_color"),
 	TITLE_COLOR_FOREGROUND("title_color_foreground"),
@@ -26,9 +26,8 @@ public enum GuiProperties implements PropertiesUtil{
 	public Paths getPath() {
 		return path;
 	}
-	
-	public String getProperty()
-	{
+	@Override
+	public String getProperty(){
 		return this.property;
 	}
 }

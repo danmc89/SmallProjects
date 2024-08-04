@@ -1,6 +1,6 @@
 package RokuLauncher;
 
-public enum RokuProperties implements PropertiesUtil{
+public enum RokuProperties implements Properties{
 	APPLICATION_TITLE("application_title"),
 	BROWSER_PATH("browser_path"),
 	WINDOW_HEIGHT("window_height"),

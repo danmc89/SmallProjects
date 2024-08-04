@@ -2,7 +2,7 @@ package RokuLauncher;
 
 import java.util.ArrayList;
 
-public enum ExtendableProperties implements PropertiesUtil{
+public enum ExtendableProperties implements Properties{
 	_POSITION("position"),
 	_TITLE("_title"),
 	_PATH("_path"),
