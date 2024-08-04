@@ -8,7 +8,8 @@ import java.util.Scanner;
 
 public class PropertiesFileLoader {
 	
-	private static final HashMap<String,String> PROPERTIES = new HashMap<String, String>();
+	private static final HashMap<Paths, HashMap<String,String>> PROPERTIES = 
+			new HashMap<Paths, HashMap<String, String>>();
 	static {
 		try {
 			readLauncherProperties();
@@ -18,9 +19,31 @@ public class PropertiesFileLoader {
 		}
 	}
 	
-	public static HashMap<String,String> getLauncherProperties()
+	private static void readLauncherProperties() throws FileNotFoundException 
 	{
-		return PROPERTIES;
+		for(Paths p : Paths.values())
+		{
+			HashMap<String, String> tmp = null;
+			String [] propLocs = p.getPaths();
+			for(String loc : propLocs)
+			{
+				tmp = readProperties(loc, "=");
+				if(tmp != null)
+				{
+					PROPERTIES.put(p, tmp);
+					break;
+				}
+			}
+			if (tmp == null) {
+				FileNotFoundException fe = new FileNotFoundException("Launcher.properties not found!");
+				throw fe;
+			}
+		}
+	}
+	
+	public static HashMap<String,String> getLauncherProperties(Paths p)
+	{
+		return PROPERTIES.get(p);
 	}
 	
 	public static void reloadLauncherProperties()
@@ -72,26 +95,5 @@ public class PropertiesFileLoader {
 			}
 		}
 		return files;
-	}
-	
-	private static void readLauncherProperties() throws FileNotFoundException 
-	{
-		HashMap<String, String> tmp = null;
-		String [] propLocs = new String [] {
-				".\\RokuLauncher\\data\\Launcher.properties",
-				".\\src\\RokuLauncher\\data\\Launcher.properties"};
-		for(String loc : propLocs)
-		{
-			tmp = readProperties(loc, "=");
-			if(tmp != null)
-			{
-				PROPERTIES.putAll(tmp);
-				break;
-			}
-		}
-		if (tmp == null) {
-			FileNotFoundException fe = new FileNotFoundException("Launcher.properties not found!");
-			throw fe;
-		}
 	}
 }

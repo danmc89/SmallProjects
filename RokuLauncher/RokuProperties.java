@@ -1,6 +1,6 @@
 package RokuLauncher;
 
-public enum RokuProperties {
+public enum RokuProperties implements PropertiesUtil{
 	APPLICATION_TITLE("application_title"),
 	BROWSER_PATH("browser_path"),
 	WINDOW_HEIGHT("window_height"),
@@ -12,28 +12,26 @@ public enum RokuProperties {
 	SYSTEM_TRAY("system_tray"),
 	CLOSE_VIDEO_TEXT("close_button_text");
 	
-	private String 
-		propertiesValue = "",
-		propertiesKey = "";
+	private String propertiesKey;
+	private Paths path = Paths.LAUNCHER;
 	
 	private	RokuProperties(String propertiesKey)
 	{
 		this.propertiesKey = propertiesKey;
-		this.propertiesValue = PropertiesFileLoader.getLauncherProperties().get(propertiesKey);
 	}
 	
-	public String getPropertiesKey()
-	{
-		return this.propertiesKey;
+	@Override
+	public Paths getPath() {
+		return path;
 	}
-	
-	public String getPropertiesValue()
-	{
-		return this.propertiesValue;
+	@Override
+	public String getProperty() {
+		return propertiesKey;
 	}
 	
 	public int getPropertiesValueAsInt()
 	{
-		return Integer.parseInt(propertiesValue);
+		return Integer.parseInt(getPropertiesValue());
 	}
+
 }

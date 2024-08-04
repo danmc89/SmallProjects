@@ -2,7 +2,7 @@ package RokuLauncher;
 
 import java.util.ArrayList;
 
-public enum ExtendableProperties {
+public enum ExtendableProperties implements PropertiesUtil{
 	_POSITION("position"),
 	_TITLE("_title"),
 	_PATH("_path"),
@@ -12,6 +12,8 @@ public enum ExtendableProperties {
 	EXTENDED_LIST("extended_list");
 	
 	private String propertiesKey = "";
+	private Paths path = Paths.LAUNCHER;
+	
 	private static final ArrayList<String> EXTENDED_LIST_KEYS = new ArrayList<String>();
 	static {
 		gatherExtended();
@@ -36,18 +38,23 @@ public enum ExtendableProperties {
 		this.propertiesKey = propertiesKey;
 	}
 	
-	public String getPropertiesKey()
-	{
-		return this.propertiesKey;
+	@Override
+	public Paths getPath() {
+		return path;
 	}
+	@Override
+	public String getProperty() {
+		return propertiesKey;
+	}
+	
 	public String getPropertiesValue(String prefix)
 	{
-		String propVal = PropertiesFileLoader.getLauncherProperties().get(prefix + propertiesKey);
+		String propVal = PropertiesFileLoader.getLauncherProperties(path).get(prefix + propertiesKey);
 		return propVal;
 	}
 	public int getPropertiesValueAsInt(String prefix)
 	{
-		String propVal = PropertiesFileLoader.getLauncherProperties().get(prefix + propertiesKey);
+		String propVal = PropertiesFileLoader.getLauncherProperties(path).get(prefix + propertiesKey);
 		return Integer.parseInt(propVal);
 	}
 }

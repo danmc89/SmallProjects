@@ -39,20 +39,7 @@ import javax.swing.JTextField;
 public class RokuLauncherWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private static final Color 
-		HIGHLIGHT_COLOR = new Color(238, 238, 238),
-		TITLE_COLOR_FOREGROUND = new Color(100, 50, 150),
-		TITLE_COLOR_BACKGROUND = new Color(190, 190, 190);
 	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
-	private static final String 
-		NAV_BUTTON_WEST = "<",
-		NAV_BUTTON_EAST = ">",
-		SYSTEM_TRAY_OPEN_OPTION = "Open",
-		SYSTEM_TRAY_CLOSE_OPTION = "Close",
-		SYSTEM_TRAY_LABEL = "Video Launcher",
-		MENU_OPTION_FILE = "File",
-		MENU_OPTION_RELOAD ="Reload",
-		MENU_OPTION_MIN_TRAY = "Minimize to System Tray";
 	
 	private static JButton selectedButton;
 	private static String selectedName;
@@ -133,13 +120,13 @@ public class RokuLauncherWindow extends JFrame {
 		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
-		menu = new JMenu(MENU_OPTION_FILE);
-		jmReload = new JMenuItem(MENU_OPTION_RELOAD);
+		menu = new JMenu(GuiProperties.MENU_OPTION_FILE.getPropertiesValue());
+		jmReload = new JMenuItem(GuiProperties.MENU_OPTION_RELOAD.getPropertiesValue());
 		jmReload.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				reloadPropertiesFile();
-				LoggingMessages.printOut(MENU_OPTION_RELOAD);
+				LoggingMessages.printOut(GuiProperties.MENU_OPTION_RELOAD.getPropertiesValue());
 			}
 		});
 		menu.add(jmReload);//end "reload" option add
@@ -147,14 +134,14 @@ public class RokuLauncherWindow extends JFrame {
 		if(RokuProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true"))
 		{
 			setupTaskbar();
-			jmSystemTray = new JMenuItem(MENU_OPTION_MIN_TRAY);
+			jmSystemTray = new JMenuItem(GuiProperties.MENU_OPTION_MIN_TRAY.getPropertiesValue());
 			jmSystemTray.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setupTrayIcon();
 					setVisible(false);
 					setExtendedState(NORMAL);
-					LoggingMessages.printOut(MENU_OPTION_MIN_TRAY);
+					LoggingMessages.printOut(GuiProperties.MENU_OPTION_MIN_TRAY.getPropertiesValue());
 				}
 			});
 			menu.add(jmSystemTray);
@@ -174,8 +161,11 @@ public class RokuLauncherWindow extends JFrame {
 		{
 			tf.setOpaque(true);
 			tf.setHorizontalAlignment(JTextField.CENTER);
-			tf.setBackground(TITLE_COLOR_BACKGROUND);
-			tf.setForeground(TITLE_COLOR_FOREGROUND);
+			int [] 
+				c1 = GuiProperties.TITLE_COLOR_BACKGROUND.getPropertyValueAsIntArray(),
+				c2 = GuiProperties.TITLE_COLOR_FOREGROUND.getPropertyValueAsIntArray();
+			tf.setBackground(new Color(c1[0], c1[1], c1[2]));
+			tf.setForeground(new Color(c2[0], c2[1], c2[2]));
 			innerPanel.add(tf, BorderLayout.CENTER);
 		}
 		for (String s : listOfFiles)
@@ -258,8 +248,8 @@ public class RokuLauncherWindow extends JFrame {
 			blW = new BorderLayout(),
 			blE = new BorderLayout();
 		
-		navW = createButton(NAV_BUTTON_WEST);
-		navE = createButton(NAV_BUTTON_EAST);
+		navW = createButton(GuiProperties.NAV_BUTTON_WEST.getPropertiesValue());
+		navE = createButton(GuiProperties.NAV_BUTTON_EAST.getPropertiesValue());
 		
 		jpW.setLayout(blW);
 		jpE.setLayout(blE);
@@ -380,8 +370,8 @@ public class RokuLauncherWindow extends JFrame {
 			File file = new File(RokuProperties.ICON.getPropertiesValue());//use location from .bat script
 			BufferedImage img = ImageIO.read(file);
 			MenuItem 	
-				open = new MenuItem(SYSTEM_TRAY_OPEN_OPTION),
-				close = new MenuItem(SYSTEM_TRAY_CLOSE_OPTION);
+				open = new MenuItem(GuiProperties.SYSTEM_TRAY_OPEN_OPTION.getPropertiesValue()),
+				close = new MenuItem(GuiProperties.SYSTEM_TRAY_CLOSE_OPTION.getPropertiesValue());
 			
 			open.addActionListener(new ActionListener() {
 				@Override
@@ -401,8 +391,7 @@ public class RokuLauncherWindow extends JFrame {
 			trayPopupMenu.add(close);
 			
 			SystemTray systemTray = SystemTray.getSystemTray();
-			String trayLabel = selectedName==null||selectedName.equals("") ? SYSTEM_TRAY_LABEL : selectedName;
-			launcherTrayIcon = new TrayIcon(img,  trayLabel, trayPopupMenu);
+			launcherTrayIcon = new TrayIcon(img, GuiProperties.SYSTEM_TRAY_LABEL.getPropertiesValue(), trayPopupMenu);
 			
 			launcherTrayIcon.setImageAutoSize(true);
 			systemTray.add(launcherTrayIcon);
@@ -460,7 +449,7 @@ public class RokuLauncherWindow extends JFrame {
 	private static void toggleHighlightButton(Component c, JButton selButton, JButton curButton) {
 		if(selButton != null)
 			selButton.setBackground(defaultBackgroundColorChannel);
-		curButton.setBackground(HIGHLIGHT_COLOR);
+		curButton.setBackground(GuiProperties.HIGHLIGHT_COLOR.getPropertyValueAsColor());
 		selButton = curButton;
 		selectedName = curButton.getText();
 		selectedButton = curButton;
