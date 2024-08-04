@@ -31,6 +31,4 @@ public enum GuiProperties implements PropertiesUtil{
 	{
 		return this.property;
 	}
-	
-	
 }

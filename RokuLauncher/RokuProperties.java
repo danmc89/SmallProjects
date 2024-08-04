@@ -28,10 +28,5 @@ public enum RokuProperties implements PropertiesUtil{
 	public String getProperty() {
 		return propertiesKey;
 	}
-	
-	public int getPropertiesValueAsInt()
-	{
-		return Integer.parseInt(getPropertiesValue());
-	}
 
 }

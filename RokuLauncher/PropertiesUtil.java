@@ -11,6 +11,11 @@ public interface PropertiesUtil {
 	{
 		return PropertiesFileLoader.getLauncherProperties(getPath()).get(getProperty());
 	}
+	
+	public default int getPropertiesValueAsInt()
+	{
+		return Integer.parseInt(getPropertiesValue());
+	}
 
 	public default int [] getPropertyValueAsIntArray()
 	{
@@ -32,5 +37,4 @@ public interface PropertiesUtil {
 		int [] c1 = getPropertyValueAsIntArray();
 		return new Color(c1[0], c1[1], c1[2]);
 	}
-	
 }
