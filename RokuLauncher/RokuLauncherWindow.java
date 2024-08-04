@@ -391,7 +391,10 @@ public class RokuLauncherWindow extends JFrame {
 			trayPopupMenu.add(close);
 			
 			SystemTray systemTray = SystemTray.getSystemTray();
-			launcherTrayIcon = new TrayIcon(img, WidgetTextProperties.SYSTEM_TRAY_LABEL.getPropertiesValue(), trayPopupMenu);
+			String trayText = selectedName == null || selectedName.equals("")
+					? WidgetTextProperties.SYSTEM_TRAY_LABEL.getPropertiesValue()
+					: selectedName;
+			launcherTrayIcon = new TrayIcon(img, trayText, trayPopupMenu);
 			
 			launcherTrayIcon.setImageAutoSize(true);
 			systemTray.add(launcherTrayIcon);
