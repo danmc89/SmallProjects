@@ -153,6 +153,7 @@ public class RokuLauncherWindow extends JFrame {
 		jmExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				RokuLauncher.closeRokuVideo();
 				System.exit(0);
 				LoggingMessages.printOut(WidgetTextProperties.MENU_OPTION_EXIT.getPropertiesValue());
 			}
