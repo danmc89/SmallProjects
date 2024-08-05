@@ -12,7 +12,6 @@ public class RokuLauncherComponentListener extends ComponentAdapter{
 	}
 	@Override
 	public void componentResized(ComponentEvent e) {
-		// TODO Auto-generated method stub
 		launcherWindow.reSizeCalc();
 	}
 }

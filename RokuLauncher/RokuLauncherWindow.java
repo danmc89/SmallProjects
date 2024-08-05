@@ -118,7 +118,8 @@ public class RokuLauncherWindow extends JFrame {
 		JMenu menu;
 		JMenuItem 
 			jmReload,
-			jmSystemTray;
+			jmSystemTray,
+			jmExit;
 		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
@@ -147,6 +148,16 @@ public class RokuLauncherWindow extends JFrame {
 			});
 			menu.add(jmSystemTray);
 		}//end "minimize to system tray" add
+		
+		jmExit = new JMenuItem(WidgetTextProperties.MENU_OPTION_EXIT.getPropertiesValue());
+		jmExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+				LoggingMessages.printOut(WidgetTextProperties.MENU_OPTION_EXIT.getPropertiesValue());
+			}
+		});
+		menu.add(jmExit);//end "exit" option add
 		
 		menuBar.add(menu);
 		this.setJMenuBar(menuBar);

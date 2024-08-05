@@ -13,6 +13,7 @@ public enum WidgetTextProperties implements Properties{
 	MENU_OPTION_FILE("menu_option_file"),
 	MENU_OPTION_RELOAD("menu_option_reload"),
 	MENU_OPTION_MIN_TRAY("menu_option_min_tray"),
+	MENU_OPTION_EXIT("menu_option_exit"),
 	CLOSE_VIDEO_TEXT("close_button_text");
 	
 	private String property;
