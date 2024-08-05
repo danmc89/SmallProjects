@@ -161,11 +161,8 @@ public class RokuLauncherWindow extends JFrame {
 		{
 			tf.setOpaque(true);
 			tf.setHorizontalAlignment(JTextField.CENTER);
-			int [] 
-				c1 = WidgetTextProperties.TITLE_COLOR_BACKGROUND.getPropertyValueAsIntArray(),
-				c2 = WidgetTextProperties.TITLE_COLOR_FOREGROUND.getPropertyValueAsIntArray();
-			tf.setBackground(new Color(c1[0], c1[1], c1[2]));
-			tf.setForeground(new Color(c2[0], c2[1], c2[2]));
+			tf.setBackground(WidgetTextProperties.TITLE_COLOR_BACKGROUND.getPropertyValueAsColor());
+			tf.setForeground(WidgetTextProperties.TITLE_COLOR_FOREGROUND.getPropertyValueAsColor());
 			innerPanel.add(tf, BorderLayout.CENTER);
 		}
 		for (String s : listOfFiles)
@@ -284,10 +281,8 @@ public class RokuLauncherWindow extends JFrame {
 	
 		maxScrollBarSize = limitHeightCount;
 		
-		clearInnerPanels();
-		buildInnerPanels(VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos());
-		
-		reloadPropertiesFile();
+		addChannelButtons();
+		paintComponents(getGraphics());
 	}
 	
 	private String titleCreator(String buttonTitle, String stripStr)
