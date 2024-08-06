@@ -287,14 +287,14 @@ public class RokuLauncherWindow extends JFrame {
 	
 	public void initialSizeDetect()
 	{
-		maxScrollBarSize = getScrollSizeCalc();
+		maxScrollBarSize = getCalcScrollThreshold();
 		
 		addChannelButtons();
 		paintComponents(getGraphics());
 	}
 	public void reSizeDetect()
 	{
-		maxScrollBarSize = getScrollSizeCalc();
+		maxScrollBarSize = getCalcScrollThreshold();
 		ArrayList<String> listOfOptions = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos(); 
 		
 		if ((listOfOptions.size() > maxScrollBarSize) != scrollUse)
@@ -303,7 +303,11 @@ public class RokuLauncherWindow extends JFrame {
 			paintComponents(getGraphics());
 		}
 	}
-	private int getScrollSizeCalc()
+	/**
+	 * 
+	 * @return number of channel options able to provide before a scrollbar is required.
+	 */
+	private int getCalcScrollThreshold()
 	{
 		int 
 		panelHeight = innerPanel2.getSize().height,
