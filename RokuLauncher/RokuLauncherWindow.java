@@ -121,6 +121,8 @@ public class RokuLauncherWindow extends JFrame {
 			jmSystemTray,
 			jmExit;
 		
+		setupTaskbar();
+		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
 		menu = new JMenu(WidgetTextProperties.MENU_OPTION_FILE.getPropertiesValue());
@@ -136,7 +138,6 @@ public class RokuLauncherWindow extends JFrame {
 		
 		if(LauncherProperties.SYSTEM_TRAY.getPropertiesValue().toLowerCase().equals("true"))
 		{
-			setupTaskbar();
 			jmSystemTray = new JMenuItem(WidgetTextProperties.MENU_OPTION_MIN_TRAY.getPropertiesValue());
 			jmSystemTray.addActionListener(new ActionListener() {
 				@Override
@@ -310,9 +311,9 @@ public class RokuLauncherWindow extends JFrame {
 	private int getCalcScrollThreshold()
 	{
 		int 
-		panelHeight = innerPanel2.getSize().height,
-		buttonHeight = navE.getSize().height,
-		limitHeightCount = buttonHeight > 0 ? (panelHeight/buttonHeight) - 2:0;//2 for title and close button always
+			panelHeight = innerPanel2.getSize().height,
+			buttonHeight = navE.getSize().height,
+			limitHeightCount = buttonHeight > 0 ? (panelHeight/buttonHeight) - 2:0;//2 for title and close button always
 
 		return limitHeightCount;
 	}
