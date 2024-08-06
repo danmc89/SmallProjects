@@ -14,7 +14,7 @@ public class RokuLauncherWindowListener extends WindowAdapter
 	
 	@Override
 	public void windowOpened(WindowEvent e) {
-		launcherWindow.initialSizeCalc();
+		launcherWindow.initialSizeDetect();
 	}
 
 	@Override

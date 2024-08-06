@@ -285,27 +285,16 @@ public class RokuLauncherWindow extends JFrame {
 		jpE.add(navE, BorderLayout.NORTH);
 	}
 	
-	public void initialSizeCalc()
+	public void initialSizeDetect()
 	{
-		int 
-			panelHeight = innerPanel2.getSize().height,
-			buttonHeight = navE.getSize().height,
-			limitHeightCount = buttonHeight > 0 ? (panelHeight/buttonHeight) - 2:0;//2 for title and close button always
-	
-		maxScrollBarSize = limitHeightCount;
+		maxScrollBarSize = getScrollSizeCalc();
 		
 		addChannelButtons();
 		paintComponents(getGraphics());
 	}
-	
-	public void reSizeCalc()
+	public void reSizeDetect()
 	{
-		int 
-			panelHeight = innerPanel2.getSize().height,
-			buttonHeight = navE.getSize().height,
-			limitHeightCount = buttonHeight > 0 ? (panelHeight/buttonHeight) - 2:0;//2 for title and close button always
-	
-		maxScrollBarSize = limitHeightCount;
+		maxScrollBarSize = getScrollSizeCalc();
 		ArrayList<String> listOfOptions = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos(); 
 		
 		if ((listOfOptions.size() > maxScrollBarSize) != scrollUse)
@@ -313,6 +302,15 @@ public class RokuLauncherWindow extends JFrame {
 			addChannelButtons();
 			paintComponents(getGraphics());
 		}
+	}
+	private int getScrollSizeCalc()
+	{
+		int 
+		panelHeight = innerPanel2.getSize().height,
+		buttonHeight = navE.getSize().height,
+		limitHeightCount = buttonHeight > 0 ? (panelHeight/buttonHeight) - 2:0;//2 for title and close button always
+
+		return limitHeightCount;
 	}
 	
 	private String titleCreator(String buttonTitle, String stripStr)
