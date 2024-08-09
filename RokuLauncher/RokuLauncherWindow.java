@@ -1,8 +1,6 @@
 package RokuLauncher;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
@@ -18,8 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -41,12 +37,9 @@ public class RokuLauncherWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
 	
-	private static JButton selectedButton;
-	private static String selectedName;
 	private static int videosListPos = 0;
 	private static int maxScrollBarSize = 0;
 	private static boolean scrollUse = false;
-	private static Color defaultBackgroundColorChannel = null;
 	
 	private JPanel 
 		innerPanel = new JPanel(),
@@ -56,6 +49,8 @@ public class RokuLauncherWindow extends JFrame {
 		navW = null,
 		navE = null;
 	private TrayIcon launcherTrayIcon = null;
+	private JButton selectedButton;
+	private String selectedName;
 	
 	
 	public RokuLauncherWindow()
@@ -88,35 +83,36 @@ public class RokuLauncherWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	private JButton findButton(String text)
+	public int getVideosListPos()
 	{
-		if (text == null)
-			return null;
-		JButton retB = null;
-		
-		for (Component c : innerPanel.getComponents())
-		{
-			if (c == null)
-				continue;
-			
-			if (c instanceof JButton)
-			{
-				JButton b = (JButton) c;
-				String bText = b.getText();
-				if(bText.equals(text)){
-					retB = b;
-					break;
-				}
-			}
-		}
-		return retB;
+		return videosListPos;
+	}
+	
+	public ArrayList<Videos> getVideos()
+	{
+		return VIDEO_PATHS_AND_TITLE;
+	}
+	
+	public JButton getSelectedButton()
+	{
+		return this.selectedButton;
+	}
+	
+	public void setSelectedButtonAndText(JButton selectedButton, String text)
+	{
+		this.selectedButton = selectedButton;
+		this.selectedName = text;
+	}
+	
+	public JPanel getChannelPanel() {
+		return innerPanel;
 	}
 	
 	private void addMenuButtons()
 	{
 		JMenuBar menuBar;
 		JMenu menu;
-		JMenuItem 
+		JMenuItem
 			jmReload,
 			jmSystemTray,
 			jmExit;
@@ -126,6 +122,7 @@ public class RokuLauncherWindow extends JFrame {
 		//Create the menu bar.
 		menuBar = new JMenuBar();
 		menu = new JMenu(WidgetTextProperties.MENU_OPTION_FILE.getPropertiesValue());
+		
 		jmReload = new JMenuItem(WidgetTextProperties.MENU_OPTION_RELOAD.getPropertiesValue());
 		jmReload.addActionListener(new ActionListener() {
 			@Override
@@ -165,7 +162,7 @@ public class RokuLauncherWindow extends JFrame {
 		this.setJMenuBar(menuBar);
 	}
 	
-	private void addChannelButtons()
+	protected void addChannelButtons()
 	{
 		clearInnerPanels();
 		
@@ -181,15 +178,26 @@ public class RokuLauncherWindow extends JFrame {
 		}
 		for (String s : listOfFiles)
 		{
-			b = createChannelButton(s);
+			ChannelActionListener cListener = new ChannelActionListener(this); 
+			b = WidgetCreator.createChannelButton(s, cListener, this);
+			cListener.setChannelButton(b);
 			innerPanel.add(b);
 		}
-		defaultBackgroundColorChannel = b.getBackground();
-		innerPanel.add(createCloseButton(WidgetTextProperties.CLOSE_VIDEO_TEXT.getPropertiesValue()));
-		JButton sel = findButton(selectedName);
+		innerPanel.add(WidgetCreator.createCloseButton(this,WidgetTextProperties.CLOSE_VIDEO_TEXT.getPropertiesValue()));
+		
+		//select the channel button if already in selected name
+		JButton sel = WidgetCreator.findButton(getChannelPanel().getComponents(), selectedName);
 		if(sel != null)
 		{
-			toggleHighlightButton(innerPanel, selectedButton, sel);
+			for(ActionListener al : sel.getActionListeners())
+			{
+				LoggingMessages.printOut("listeners: " + al);
+				if (al != null && al instanceof ChannelActionListener)
+				{
+					ChannelActionListener cListener = (ChannelActionListener) al;
+					cListener.toggleHighLightButton();
+				}
+			}
 		}
 		buildInnerPanels(listOfFiles);
 	}
@@ -202,88 +210,19 @@ public class RokuLauncherWindow extends JFrame {
 		this.remove(innerPanel2);
 	}
 	
-	private JButton createChannelButton(String title)
-	{
-		JButton b = createButton(title);
-		b.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String exe = VIDEO_PATHS_AND_TITLE.get(videosListPos).getExeName();
-				if(exe != null && !exe.equals(""))
-				{
-					RokuLauncher.executeProcess(exe, VIDEO_PATHS_AND_TITLE.get(videosListPos).returnVideo(b.getName()));
-					toggleHighlightButton(innerPanel, selectedButton, b);
-				}
-				else
-				{
-					RokuLauncher.executeProcess(VIDEO_PATHS_AND_TITLE.get(videosListPos).returnVideo(b.getName()));
-					toggleHighlightButton(innerPanel, selectedButton, b);
-				}
-			}
-		});
-		return b;
-	}
-	
-	private JButton createCloseButton(String title)
-	{
-		JButton b = createButton(title);
-		b.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(selectedButton != null)
-					selectedButton.setBackground(b.getBackground());
-				RokuLauncher.closeRokuVideo();
-				selectedButton = null;
-				selectedName = null;
-				repaint();
-			}
-		});
-		return b;
-	}
-	
-	private JButton createButton(String title)
-	{
-		String filter = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideoStripFilter();
-		JButton b = new JButton();
-		
-		b.setName(title);
-		b.setText(titleCreator(title, filter));
-		
-		return b;
-	}
-	
 	private void createNavigationButtons()
 	{
+		navW = WidgetCreator.createButton(WidgetTextProperties.NAV_BUTTON_WEST.getPropertiesValue());
+		navW.addActionListener(new NavigationButtonActionListener(this, Direction.BACKWARD));
+		navE = WidgetCreator.createButton(WidgetTextProperties.NAV_BUTTON_EAST.getPropertiesValue());
+		navE.addActionListener(new NavigationButtonActionListener(this, Direction.FORWARD));
+		
 		JPanel 
-			jpW = new JPanel(),
-			jpE = new JPanel();
-		BorderLayout
-			blW = new BorderLayout(),
-			blE = new BorderLayout();
+			jpW = WidgetCreator.createNavigationPanel(navW),
+			jpE = WidgetCreator.createNavigationPanel(navE);
 		
-		navW = createButton(WidgetTextProperties.NAV_BUTTON_WEST.getPropertiesValue());
-		navE = createButton(WidgetTextProperties.NAV_BUTTON_EAST.getPropertiesValue());
-		
-		jpW.setLayout(blW);
-		jpE.setLayout(blE);
-		navW.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setNextVideoIndex(videosListPos, Direction.BACKWARD);
-				addChannelButtons();
-				paintComponents(getGraphics());
-			}
-		});
-		navE.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setNextVideoIndex(videosListPos, Direction.FORWARD);
-				addChannelButtons();
-				paintComponents(getGraphics());
-			}
-		});
 		this.add(jpW, BorderLayout.WEST);
 		this.add(jpE, BorderLayout.EAST);
-		jpW.add(navW, BorderLayout.NORTH);
-		jpE.add(navE, BorderLayout.NORTH);
 	}
 	
 	public void initialSizeDetect()
@@ -318,16 +257,6 @@ public class RokuLauncherWindow extends JFrame {
 		return limitHeightCount;
 	}
 	
-	private String titleCreator(String buttonTitle, String stripStr)
-	{
-		String replstr = "";
-		if(stripStr == null || stripStr.equals(""))
-			return buttonTitle;
-		Pattern pat = Pattern.compile(stripStr, Pattern.CASE_INSENSITIVE);
-		Matcher mat = pat.matcher(buttonTitle);
-		return mat.replaceAll(replstr);
-	}
-	
 	private int getWindowWidth()
 	{
 		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos();
@@ -340,8 +269,8 @@ public class RokuLauncherWindow extends JFrame {
 		        return s2.length() - s1.length();
 		    }
 		});
-		String lenStr = titleCreator(cloneList.get(0), filter);
-		JButton b = findButton(lenStr);
+		String lenStr = WidgetCreator.titleCreator(cloneList.get(0), filter);
+		JButton b = WidgetCreator.findButton(getChannelPanel().getComponents(), lenStr);
 		
 		
 		if(b == null)
@@ -451,7 +380,8 @@ public class RokuLauncherWindow extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	private static void setupVideoLists()
+	
+	private void setupVideoLists()
 	{
 		ArrayList<String> extList = ExtendableProperties.getExtendedList();
 		for(String k : extList)
@@ -470,20 +400,10 @@ public class RokuLauncherWindow extends JFrame {
 		}
 	}
 	
-	private static void setNextVideoIndex(int curPosition, Direction direction)
+	protected void setNextVideoIndex(int curPosition, Direction direction)
 	{
 		videosListPos = direction.getIndexDirectionNext(
 				curPosition, 
 				VIDEO_PATHS_AND_TITLE.size()-1);
-	}
-	
-	private static void toggleHighlightButton(Component c, JButton selButton, JButton curButton) {
-		if(selButton != null)
-			selButton.setBackground(defaultBackgroundColorChannel);
-		curButton.setBackground(WidgetTextProperties.HIGHLIGHT_COLOR.getPropertyValueAsColor());
-		selButton = curButton;
-		selectedName = curButton.getText();
-		selectedButton = curButton;
-		c.repaint();
 	}
 }
