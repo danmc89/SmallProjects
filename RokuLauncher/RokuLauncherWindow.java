@@ -30,7 +30,10 @@ import javax.swing.JTextField;
 public class RokuLauncherWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private static final ArrayList<Videos> VIDEO_PATHS_AND_TITLE = new ArrayList<Videos>();
+	private static final ArrayList<Videos> COLLECTION_VIDEOS = new ArrayList<Videos>();
+	static {
+		setupVideoLists();
+	}
 	
 	private static int videosListPos = 0;
 	private static int maxScrollBarSize = 0;
@@ -53,7 +56,6 @@ public class RokuLauncherWindow extends JFrame {
 		int winHeight = LauncherProperties.WINDOW_HEIGHT.getPropertiesValueAsInt();
 		
 		addMenuButtons();
-		setupVideoLists();
 		
 		setTitle(WidgetTextProperties.APPLICATION_TITLE.getPropertiesValue());
 		setLocation(LauncherProperties.WINDOW_LOCATION_X.getPropertiesValueAsInt(), 
@@ -61,7 +63,6 @@ public class RokuLauncherWindow extends JFrame {
 		
 		BorderLayout bl = new BorderLayout();
 		scrPane = new JScrollPane(innerPanel);
-		
 		BorderLayout bl2 = new BorderLayout();
 		innerPanel2.setLayout(bl2);
 		innerPanel2.add(scrPane, BorderLayout.NORTH);
@@ -85,7 +86,7 @@ public class RokuLauncherWindow extends JFrame {
 	
 	public ArrayList<Videos> getVideos()
 	{
-		return VIDEO_PATHS_AND_TITLE;
+		return COLLECTION_VIDEOS;
 	}
 	
 	public JButton getSelectedButton()
@@ -177,8 +178,8 @@ public class RokuLauncherWindow extends JFrame {
 		clearInnerPanels();
 		
 		JButton b = null;
-		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos();
-		JLabel tf = new JLabel(VIDEO_PATHS_AND_TITLE.get(videosListPos).getTitle());
+		ArrayList<String> listOfFiles = COLLECTION_VIDEOS.get(videosListPos).getVideos();
+		JLabel tf = new JLabel(COLLECTION_VIDEOS.get(videosListPos).getTitle());
 		{
 			tf.setOpaque(true);
 			tf.setHorizontalAlignment(JTextField.CENTER);
@@ -245,7 +246,7 @@ public class RokuLauncherWindow extends JFrame {
 	public void reSizeDetect()
 	{
 		maxScrollBarSize = getCalcScrollThreshold();
-		ArrayList<String> listOfOptions = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos(); 
+		ArrayList<String> listOfOptions = COLLECTION_VIDEOS.get(videosListPos).getVideos(); 
 		
 		if ((listOfOptions.size() > maxScrollBarSize) != scrollUse)
 		{
@@ -269,10 +270,10 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private int getWindowWidth()
 	{
-		ArrayList<String> listOfFiles = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideos();
+		ArrayList<String> listOfFiles = COLLECTION_VIDEOS.get(videosListPos).getVideos();
 		@SuppressWarnings("unchecked")
 		ArrayList<String> cloneList = (ArrayList<String>) listOfFiles.clone();
-		String filter = VIDEO_PATHS_AND_TITLE.get(videosListPos).getVideoStripFilter();
+		String filter = COLLECTION_VIDEOS.get(videosListPos).getVideoStripFilter();
 		
 		Collections.sort(cloneList, new Comparator<String>(){
 		    public int compare(String s1, String s2) {
@@ -325,19 +326,19 @@ public class RokuLauncherWindow extends JFrame {
 	
 	private void reloadPropertiesFile()
 	{
-		VIDEO_PATHS_AND_TITLE.clear();
+		COLLECTION_VIDEOS.clear();
 		setupVideoLists();
 		PropertiesFileLoader.reloadLauncherProperties();
 		addChannelButtons();
 		paintComponents(getGraphics());
 	}
 	
-	private void setupVideoLists()
+	private static void setupVideoLists()
 	{
 		ArrayList<String> extList = ExtendableProperties.getExtendedList();
 		for(String k : extList)
 		{
-			VIDEO_PATHS_AND_TITLE.add(
+			COLLECTION_VIDEOS.add(
 				new Videos(PropertiesFileLoader.getOSFileList(
 						ExtendableProperties._PATH.getPropertiesValue(k),
 						ExtendableProperties._CHANNEL_FILETYPE.getPropertiesValue(k)),
@@ -355,6 +356,6 @@ public class RokuLauncherWindow extends JFrame {
 	{
 		videosListPos = direction.getIndexDirectionNext(
 				curPosition, 
-				VIDEO_PATHS_AND_TITLE.size()-1);
+				COLLECTION_VIDEOS.size()-1);
 	}
 }
