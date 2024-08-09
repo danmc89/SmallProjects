@@ -6,18 +6,13 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
-import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -108,6 +103,11 @@ public class RokuLauncherWindow extends JFrame {
 		return innerPanel;
 	}
 	
+	public TrayIcon getTrayIcon()
+	{
+		return launcherTrayIcon;
+	}
+	
 	private void addMenuButtons()
 	{
 		JMenuBar menuBar;
@@ -117,7 +117,7 @@ public class RokuLauncherWindow extends JFrame {
 			jmSystemTray,
 			jmExit;
 		
-		setupTaskbar();
+		WidgetCreator.setupTaskbar(this);
 		
 		//Create the menu bar.
 		menuBar = new JMenuBar();
@@ -139,7 +139,17 @@ public class RokuLauncherWindow extends JFrame {
 			jmSystemTray.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					setupTrayIcon();
+					MenuItem miO = WidgetCreator.buildMenuItem(
+							WidgetTextProperties.SYSTEM_TRAY_OPEN_OPTION.getPropertiesValue(),
+							new OpenPopupMenu(RokuLauncherWindow.this));
+					MenuItem miC = WidgetCreator.buildMenuItem(
+							WidgetTextProperties.SYSTEM_TRAY_CLOSE_OPTION.getPropertiesValue(),
+							new ClosePopupMenu());
+					String trayText = selectedName == null || selectedName.equals("")
+							? WidgetTextProperties.SYSTEM_TRAY_LABEL.getPropertiesValue()
+							: selectedName;
+					PopupMenu popMenu = WidgetCreator.buildPopupMenu(miO, miC);
+					launcherTrayIcon = WidgetCreator.setupTrayIcon(RokuLauncherWindow.this, trayText, popMenu);
 					setVisible(false);
 					setExtendedState(NORMAL);
 				}
@@ -320,65 +330,6 @@ public class RokuLauncherWindow extends JFrame {
 		PropertiesFileLoader.reloadLauncherProperties();
 		addChannelButtons();
 		paintComponents(getGraphics());
-	}
-	private void setupTrayIcon()
-	{
-		try {
-			PopupMenu trayPopupMenu = new PopupMenu();
-			File file = new File(LauncherProperties.ICON.getPropertiesValue());//use location from .bat script
-			BufferedImage img = ImageIO.read(file);
-			MenuItem 	
-				open = new MenuItem(WidgetTextProperties.SYSTEM_TRAY_OPEN_OPTION.getPropertiesValue()),
-				close = new MenuItem(WidgetTextProperties.SYSTEM_TRAY_CLOSE_OPTION.getPropertiesValue());
-			
-			open.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					setVisible(true);
-					destroySystemTray();
-				}
-			});
-			trayPopupMenu.add(open);
-			close.addActionListener(new ActionListener() {
-			    @Override
-			    public void actionPerformed(ActionEvent e) {
-			    	RokuLauncher.closeRokuVideo();
-			        System.exit(0);           
-			    }
-			});
-			trayPopupMenu.add(close);
-			
-			SystemTray systemTray = SystemTray.getSystemTray();
-			String trayText = selectedName == null || selectedName.equals("")
-					? WidgetTextProperties.SYSTEM_TRAY_LABEL.getPropertiesValue()
-					: selectedName;
-			launcherTrayIcon = new TrayIcon(img, trayText, trayPopupMenu);
-			
-			launcherTrayIcon.setImageAutoSize(true);
-			systemTray.add(launcherTrayIcon);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private void destroySystemTray()
-	{
-		SystemTray systemTray = SystemTray.getSystemTray();
-		systemTray.remove(launcherTrayIcon);
-	}
-	
-	private void setupTaskbar()
-	{
-		File file = new File(LauncherProperties.ICON.getPropertiesValue());
-		BufferedImage img;
-		try {
-			img = ImageIO.read(file);
-			this.setIconImage(img);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	private void setupVideoLists()
